@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人專業履歷 - 20+年跨領域與公私部門經驗</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Noto Sans TC, Plus Jakarta Sans & Noto Serif TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;800&family=Noto+Serif+TC:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#FAF7F2',
+                            100: '#F4ECE1',
+                            200: '#E7D8C3',
+                            300: '#D6BD9B',
+                            400: '#C5A059', // Champagne Gold
+                            500: '#B08942', // Rich Gold
+                            600: '#8E6A2F', // Warm Bronze
+                            700: '#6E4E20',
+                            800: '#523816',
+                            900: '#3A260E',
+                            950: '#231607',
+                        },
+                        stoneBg: {
+                            50: '#FAF8F5',  // Alabaster Beige (Main Light BG)
+                            100: '#F4EFEA',
+                            200: '#E8DFD5',
+                            800: '#1F1C1A',
+                            900: '#171412',  // Deep Mocha Dark BG
+                            950: '#0F0D0C',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Noto Serif TC"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+            background-color: #FAF8F5;
+            color: #2D2724;
+        }
+        .dark body {
+            background-color: #171412;
+            color: #EDE8E1;
+        }
+        .glass-header {
+            background: rgba(250, 248, 245, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .dark .glass-header {
+            background: rgba(23, 20, 18, 0.88);
+        }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background: #E8DFD5;
+        }
+        .dark .timeline-line::before {
+            background: #332B25;
+        }
+        @media (min-width: 768px) {
+            .timeline-line::before {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+        .custom-gradient-text {
+            background: linear-gradient(135deg, #B08942 0%, #3A260E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .dark .custom-gradient-text {
+            background: linear-gradient(135deg, #E7D8C3 0%, #C5A059 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .font-serif-title {
+            font-family: 'Noto Serif TC', serif;
+        }
+    </style>
+</head>
+<body class="antialiased bg-stoneBg-50 dark:bg-stoneBg-900 text-stone-800 dark:text-stone-100 transition-colors duration-300">
+
+    <!-- Sticky Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-header border-b border-stone-200/70 dark:border-stone-800/80 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="#hero" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-brand-300 flex items-center justify-center text-white font-bold text-xl shadow-sm group-hover:scale-105 transition-transform font-serif-title">
+                    歷
+                </div>
+                <div>
+                    <span class="text-base sm:text-lg font-bold tracking-tight text-stone-900 dark:text-stone-100 block leading-tight font-serif-title">資深職涯個人檔</span>
+                    <span class="text-xs text-brand-600 dark:text-brand-300 font-medium">公私部門 20+ 年歷練</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 font-medium text-sm text-stone-600 dark:text-stone-300">
+                <a href="#about" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">職涯簡介</a>
+                <a href="#competencies" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">核心專長</a>
+                <a href="#experience" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">職涯時間軸</a>
+                <a href="#agencies" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">公部門歷練</a>
+                <a href="#contact" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">聯絡資訊</a>
+            </nav>
+
+            <!-- Right Actions -->
+            <div class="flex items-center gap-3">
+                <!-- LinkedIn Quick Icon -->
+                <a href="https://www.linkedin.com/in/kai-yin-yang-760529424" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-stoneBg-100 dark:bg-stoneBg-800 text-stone-600 dark:text-stone-300 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-stone-200 dark:hover:bg-stone-700 transition-all flex items-center justify-center" title="前往 LinkedIn">
+                    <i class="fa-brands fa-linkedin-in text-base"></i>
+                </a>
+                <!-- Music Toggle Button -->
+                <button id="musicToggle" class="p-2 rounded-lg bg-stoneBg-100 dark:bg-stoneBg-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 transition-all flex items-center gap-1.5 text-xs font-semibold group" title="播放/暫停背景音樂">
+                    <i id="musicIcon" class="fa-solid fa-music text-stone-500 dark:text-stone-400 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors"></i>
+                    <span id="musicText" class="hidden sm:inline">背景音樂</span>
+                </button>
+                <button id="themeToggle" class="p-2 rounded-lg bg-stoneBg-100 dark:bg-stoneBg-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors" title="切換深色/淺色模式">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-amber-300"></i>
+                </button>
+                <a href="#contact" class="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 shadow-sm transition-all hover:shadow">
+                    <i class="fa-solid fa-paper-plane mr-2 text-xs"></i> 聯繫洽談
+                </a>
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden border-b border-stone-200 dark:border-stone-800 bg-stoneBg-50/95 dark:bg-stoneBg-900/95 px-4 pt-2 pb-6 space-y-3">
+            <a href="#about" class="mobile-nav-link block px-3 py-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 font-medium">職涯簡介</a>
+            <a href="#competencies" class="mobile-nav-link block px-3 py-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 font-medium">核心專長</a>
+            <a href="#experience" class="mobile-nav-link block px-3 py-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 font-medium">職涯時間軸</a>
+            <a href="#agencies" class="mobile-nav-link block px-3 py-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 font-medium">公部門歷練</a>
+            <a href="#contact" class="mobile-nav-link block px-3 py-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 font-medium text-brand-600 dark:text-brand-400 font-bold">聯絡資訊</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden relative">
+        <!-- Background accents with subtle warm lighting -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-300/20 dark:bg-brand-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div class="absolute top-1/3 right-10 w-[300px] h-[300px] bg-amber-200/20 dark:bg-amber-500/5 rounded-full blur-2xl -z-10 pointer-events-none"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto">
+                
+                <!-- 置頂個人形象照區域 -->
+                <div class="relative mx-auto w-36 h-36 sm:w-44 sm:h-44 mb-6 group">
+                    <div class="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-brand-500 via-brand-300 to-amber-200 opacity-80 blur-md group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <img src="https://i.pinimg.com/736x/35/2c/23/352c23784c87622bc60685d5f3668b0f.jpg" alt="個人形象照" class="relative w-full h-full object-cover object-top rounded-full border-2 border-brand-300/80 shadow-2xl transition-transform duration-300 group-hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/400x400/C5A059/ffffff?text=Portrait';">
+                </div>
+
+                <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-stoneBg-800 border border-brand-200 dark:border-brand-800/60 text-brand-700 dark:text-brand-300 text-xs sm:text-sm font-semibold mb-6 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                    橫跨私部門與公部門｜即戰力行政與財會專家
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight font-serif-title">
+                    具備 <span class="custom-gradient-text">20+ 年跨界歷練</span><br class="hidden sm:inline">
+                    快速上手與敏捷適應的專業人才
+                </h1>
+
+                <p class="text-base sm:text-lg text-stone-600 dark:text-stone-300 mb-8 leading-relaxed">
+                    從私部門的業務營運與採購管理，到自 2018 年起於中央與地方多個公部門機關擔綱重任。豐富的跨產業、跨機關行政經驗，養成了我能隨時切入新業務、迅速建立專業流程的強大適應力。
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#experience" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold shadow-lg shadow-brand-600/20 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-timeline"></i> 探索職涯歷程
+                    </a>
+                    <a href="https://www.linkedin.com/in/kai-yin-yang-760529424" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white dark:bg-stoneBg-800 border border-stone-300/80 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-750 font-bold text-stone-700 dark:text-stone-200 shadow-sm transition-all flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-linkedin text-brand-600 dark:text-brand-400 text-lg"></i> 造訪 LinkedIn
+                    </a>
+                </div>
+            </div>
+
+            <!-- Key Metrics Banner -->
+            <div class="mt-14 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto">
+                <div class="bg-white/90 dark:bg-stoneBg-800/90 p-5 rounded-2xl border border-stone-200/80 dark:border-stone-700/80 text-center shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-brand-600 dark:text-brand-400 mb-1 font-serif-title">20+</div>
+                    <div class="text-xs sm:text-sm font-medium text-stone-500 dark:text-stone-400">總職涯年份 (年)</div>
+                </div>
+                <div class="bg-white/90 dark:bg-stoneBg-800/90 p-5 rounded-2xl border border-stone-200/80 dark:border-stone-700/80 text-center shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-brand-500 dark:text-brand-300 mb-1 font-serif-title">8+</div>
+                    <div class="text-xs sm:text-sm font-medium text-stone-500 dark:text-stone-400">公部門機關服務</div>
+                </div>
+                <div class="bg-white/90 dark:bg-stoneBg-800/90 p-5 rounded-2xl border border-stone-200/80 dark:border-stone-700/80 text-center shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-stone-700 dark:text-stone-200 mb-1 font-serif-title">4</div>
+                    <div class="text-xs sm:text-sm font-medium text-stone-500 dark:text-stone-400">核心領域專業</div>
+                </div>
+                <div class="bg-white/90 dark:bg-stoneBg-800/90 p-5 rounded-2xl border border-stone-200/80 dark:border-stone-700/80 text-center shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-brand-600 dark:text-brand-400 mb-1 font-serif-title">100%</div>
+                    <div class="text-xs sm:text-sm font-medium text-stone-500 dark:text-stone-400">迅速上手適應率</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-white/60 dark:bg-stoneBg-800/40 border-y border-stone-200/70 dark:border-stone-800">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center gap-10">
+                <div class="w-full md:w-5/12">
+                    <div class="relative mx-auto max-w-xs md:max-w-none">
+                        <!-- Decorative background frame -->
+                        <div class="absolute -inset-2 rounded-3xl bg-gradient-to-r from-brand-400 to-amber-200 opacity-30 blur-lg"></div>
+                        <div class="relative bg-stoneBg-50 dark:bg-stoneBg-800 p-6 sm:p-8 rounded-2xl border border-stone-200 dark:border-stone-700 shadow-xl text-center">
+                            <div class="w-40 h-52 sm:w-48 sm:h-60 mx-auto mb-4 rounded-2xl overflow-hidden border-2 border-brand-300/80 dark:border-stone-600 shadow-md relative group">
+                                <img src="https://i.pinimg.com/736x/35/2c/23/352c23784c87622bc60685d5f3668b0f.jpg" alt="個人形象照" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/400x500/C5A059/ffffff?text=Personal+Portrait';">
+                            </div>
+                            <h3 class="text-xl font-bold text-stone-900 dark:text-stone-100 font-serif-title">跨領域資深專員</h3>
+                            <p class="text-xs text-brand-600 dark:text-brand-300 font-medium mt-1">公私部門營運行政 / 財會採購</p>
+                            <div class="mt-6 pt-6 border-t border-stone-200/80 dark:border-stone-700/80 space-y-2 text-left text-xs sm:text-sm text-stone-600 dark:text-stone-300">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-stone-400"><i class="fa-solid fa-briefcase w-5"></i> 核心特質</span>
+                                    <span class="font-semibold text-stone-800 dark:text-stone-200">高度敏捷 / 獨立作業</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-stone-400"><i class="fa-solid fa-clock-rotate-left w-5"></i> 公部門服務</span>
+                                    <span class="font-semibold text-stone-800 dark:text-stone-200">2018年至今</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-stone-400"><i class="fa-solid fa-award w-5"></i> 機關涉獵</span>
+                                    <span class="font-semibold text-stone-800 dark:text-stone-200">中央與地方多機關</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-7/12">
+                    <span class="text-brand-600 dark:text-brand-400 text-sm font-bold tracking-wider uppercase">ABOUT ME · 職涯自我簡述</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 mt-1 mb-6 font-serif-title">
+                        豐富經驗帶來的成熟度，<br class="hidden sm:block">能為各單位注入穩健且高效的執行力
+                    </h2>
+                    
+                    <div class="prose dark:prose-invert text-stone-600 dark:text-stone-300 space-y-4 text-base leading-relaxed">
+                        <p class="bg-brand-50/60 dark:bg-stoneBg-800/80 p-4 rounded-xl border-l-4 border-brand-500">
+                            「我擁有超過 <strong class="text-stone-900 dark:text-stone-100">20 年的多元職涯經歷</strong>，橫跨私部門與公部門，涉獵會計財務、零售管理、採購行政、財產管理等多個核心領域。」
+                        </p>
+                        <p>
+                            職涯前半段於私部門扎根，歷任<strong>門市業務會計、業務經理與採購專員</strong>，深諳市場運作靈活性、成本控管與顧客服務細節。自 <strong>2018 年轉任公部門約僱人員</strong>以來，先後服務於臺北市教育局、臺北市衛生局、法務部、新北市政府採購處、交通部航港局、數位發展部、新北市稅捐稽徵處及新北市瑞芳區公所等多個單位。
+                        </p>
+                        <p>
+                            這段豐富且多元的跨產業、跨機關歷練，讓我不僅具備極高的公務法規適應度與行政溝通軟實力，更養成了<strong class="text-brand-600 dark:text-brand-300">「快速適應新環境、快速上手新業務」</strong>的核心競爭力。
+                        </p>
+                    </div>
+
+                    <div class="mt-8 flex flex-wrap gap-2.5">
+                        <span class="px-3.5 py-1.5 rounded-lg bg-stone-100 dark:bg-stoneBg-800 text-stone-700 dark:text-stone-300 text-xs font-semibold flex items-center gap-1.5 border border-stone-200/60 dark:border-stone-700">
+                            <i class="fa-solid fa-check text-brand-500"></i> 會計財務
+                        </span>
+                        <span class="px-3.5 py-1.5 rounded-lg bg-stone-100 dark:bg-stoneBg-800 text-stone-700 dark:text-stone-300 text-xs font-semibold flex items-center gap-1.5 border border-stone-200/60 dark:border-stone-700">
+                            <i class="fa-solid fa-check text-brand-500"></i> 零售管理
+                        </span>
+                        <span class="px-3.5 py-1.5 rounded-lg bg-stone-100 dark:bg-stoneBg-800 text-stone-700 dark:text-stone-300 text-xs font-semibold flex items-center gap-1.5 border border-stone-200/60 dark:border-stone-700">
+                            <i class="fa-solid fa-check text-brand-500"></i> 採購行政
+                        </span>
+                        <span class="px-3.5 py-1.5 rounded-lg bg-stone-100 dark:bg-stoneBg-800 text-stone-700 dark:text-stone-300 text-xs font-semibold flex items-center gap-1.5 border border-stone-200/60 dark:border-stone-700">
+                            <i class="fa-solid fa-check text-brand-500"></i> 財產管理
+                        </span>
+                        <span class="px-3.5 py-1.5 rounded-lg bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 text-xs font-semibold flex items-center gap-1.5 border border-brand-200 dark:border-brand-800">
+                            <i class="fa-solid fa-bolt text-amber-500"></i> 高敏捷適應力
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Competencies Section -->
+    <section id="competencies" class="py-16 md:py-24">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-brand-600 dark:text-brand-400 text-sm font-bold tracking-wider uppercase">CORE COMPETENCIES</span>
+                <h2 class="text-3xl font-extrabold text-stone-900 dark:text-stone-100 mt-1 font-serif-title">四大核心專業領域</h2>
+                <p class="text-stone-600 dark:text-stone-400 mt-3 text-sm sm:text-base">
+                    結合私部門的效益導向與公部門的依法行政，打造全方位的業務支援系統
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white dark:bg-stoneBg-800 rounded-2xl p-6 border border-stone-200/80 dark:border-stone-700 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+                    <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-300 flex items-center justify-center text-xl font-bold mb-5 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100 mb-2 font-serif-title">會計財務</h3>
+                    <p class="text-xs sm:text-sm text-stone-600 dark:text-stone-400 leading-relaxed mb-4">
+                        私部門業務會計實務經驗，精準掌握帳務核對、出納審核與預算控管，確保財務數據無誤。
+                    </p>
+                    <ul class="text-xs text-stone-500 dark:text-stone-400 space-y-1.5 border-t border-stone-100 dark:border-stone-700/80 pt-4">
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 門市與業務帳務整理</li>
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 審計憑證與憑證核銷</li>
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 經費編列與收支控管</li>
+                    </ul>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white dark:bg-stoneBg-800 rounded-2xl p-6 border border-stone-200/80 dark:border-stone-700 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+                    <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-300 flex items-center justify-center text-xl font-bold mb-5 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100 mb-2 font-serif-title">零售管理</h3>
+                    <p class="text-xs sm:text-sm text-stone-600 dark:text-stone-400 leading-relaxed mb-4">
+                        曾擔任業務經理，深入第一線經營溝通、人員調配與目標達成，培養敏銳市場與溝通情商。
+                    </p>
+                    <ul class="text-xs text-stone-500 dark:text-stone-400 space-y-1.5 border-t border-stone-100 dark:border-stone-700/80 pt-4">
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 團隊溝通與業務管理</li>
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 門市營運與服務流程</li>
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 危機處理與客戶關係</li>
+                    </ul>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white dark:bg-stoneBg-800 rounded-2xl p-6 border border-stone-200/80 dark:border-stone-700 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+                    <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-300 flex items-center justify-center text-xl font-bold mb-5 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-cart-flatbed"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100 mb-2 font-serif-title">採購行政</h3>
+                    <p class="text-xs sm:text-sm text-stone-600 dark:text-stone-400 leading-relaxed mb-4">
+                        橫跨民營企業採購專員與新北市政府採購處等單位，具備採購程序與行政作業經驗。
+                    </p>
+                    <ul class="text-xs text-slate-500 dark:text-stone-400 space-y-1.5 border-t border-stone-100 dark:border-stone-700/80 pt-4">
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 供應商聯繫與詢比議價</li>
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 公務採購流程與合約行政</li>
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 履約管理與驗收登錄</li>
+                    </ul>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white dark:bg-stoneBg-800 rounded-2xl p-6 border border-stone-200/80 dark:border-stone-700 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+                    <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-300 flex items-center justify-center text-xl font-bold mb-5 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-boxes-packing"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100 mb-2 font-serif-title">財產管理</h3>
+                    <p class="text-xs sm:text-sm text-stone-600 dark:text-stone-400 leading-relaxed mb-4">
+                        於公部門多個機關負責物品盤點、財產登記與報廢管理，落實物品清查與帳物一致。
+                    </p>
+                    <ul class="text-xs text-stone-500 dark:text-stone-400 space-y-1.5 border-t border-stone-100 dark:border-stone-700/80 pt-4">
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 動產與物品定期盤點</li>
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 財產管理系統登錄維護</li>
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right text-brand-500"></i> 廢棄與轉移標籤核對</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Career Timeline Section -->
+    <section id="experience" class="py-16 bg-stone-100/60 dark:bg-stoneBg-800/40 border-y border-stone-200/80 dark:border-stone-800">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-brand-600 dark:text-brand-400 text-sm font-bold tracking-wider uppercase">CAREER TIMELINE</span>
+                <h2 class="text-3xl font-extrabold text-stone-900 dark:text-stone-100 mt-1 font-serif-title">職涯發展軸線</h2>
+                <p class="text-stone-600 dark:text-stone-400 mt-2 text-sm">
+                    點選頁籤可快速檢視公部門或私部門經歷細節
+                </p>
+
+                <!-- Filter buttons -->
+                <div class="inline-flex p-1 mt-6 rounded-xl bg-stone-200/70 dark:bg-stoneBg-800 gap-1 border border-stone-300/50 dark:border-stone-700">
+                    <button id="filterAll" class="timeline-filter-btn active-tab px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white dark:bg-stone-700 text-brand-600 dark:text-brand-300 shadow-sm">
+                        全部歷程 (20+年)
+                    </button>
+                    <button id="filterGov" class="timeline-filter-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100 transition-all">
+                        公部門機關 (2018至今)
+                    </button>
+                    <button id="filterPrivate" class="timeline-filter-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-bold text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100 transition-all">
+                        私部門歷練
+                    </button>
+                </div>
+            </div>
+
+            <!-- Timeline items container -->
+            <div class="relative timeline-line space-y-8">
+
+                <!-- Timeline Item: Public Sector Era (2018 - Present) -->
+                <div class="timeline-item gov-item relative flex flex-col md:flex-row items-start md:items-center">
+                    <!-- Icon badge -->
+                    <div class="absolute left-0 md:left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-lg shadow-md z-10 ring-4 ring-stoneBg-50 dark:ring-stoneBg-900">
+                        <i class="fa-solid fa-building-columns text-sm"></i>
+                    </div>
+
+                    <!-- Date tag on one side for desktop -->
+                    <div class="ml-14 md:ml-0 md:w-1/2 md:pr-12 md:text-right mb-2 md:mb-0">
+                        <span class="inline-block px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-700 dark:text-brand-300 text-xs font-bold">
+                            2018 年 — 至今
+                        </span>
+                        <h4 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 mt-1 font-serif-title">公部門機關 約僱人員職務</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 font-medium">跨中央部會與雙北市政府多個機關單位</p>
+                    </div>
+
+                    <!-- Content box on the other side -->
+                    <div class="ml-14 md:ml-0 md:w-1/2 md:pl-12">
+                        <div class="bg-white dark:bg-stoneBg-800 p-6 rounded-2xl border border-stone-200/80 dark:border-stone-700 shadow-sm">
+                            <h5 class="text-sm font-bold text-stone-800 dark:text-stone-200 mb-2">重點職務範疇與成就：</h5>
+                            <ul class="text-xs sm:text-sm text-stone-600 dark:text-stone-300 space-y-2 list-disc list-inside">
+                                <li>於<strong>數位發展部、交通部航港局、法務部</strong>等中央機關支援行政財會業務。</li>
+                                <li>於<strong>臺北市教育局、臺北市衛生局、新北市政府採購處、稅捐稽徵處、瑞芳區公所</strong>等地方機關執行採購、財產管理與民眾服務。</li>
+                                <li>具備極高的<strong>「極速適應力」</strong>，能在調任新單位短時間內釐清公務法令與內部核決流程。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item: Private Sector Procurement Specialist -->
+                <div class="timeline-item private-item relative flex flex-col md:flex-row items-start md:items-center">
+                    <div class="absolute left-0 md:left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-stone-700 text-white flex items-center justify-center font-bold text-lg shadow-md z-10 ring-4 ring-stoneBg-50 dark:ring-stoneBg-900">
+                        <i class="fa-solid fa-truck-ramp-box text-sm"></i>
+                    </div>
+
+                    <div class="ml-14 md:ml-0 md:w-1/2 md:pr-12 md:text-right order-1 md:order-2 mb-2 md:mb-0">
+                        <span class="inline-block px-3 py-1 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs font-bold">
+                            私部門發展期
+                        </span>
+                        <h4 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 mt-1 font-serif-title">採購專員 (Procurement Specialist)</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 font-medium">民營企業供應鏈與採購作業</p>
+                    </div>
+
+                    <div class="ml-14 md:ml-0 md:w-1/2 md:pl-12 order-2 md:order-1 md:text-right">
+                        <div class="bg-white dark:bg-stoneBg-800 p-6 rounded-2xl border border-stone-200/80 dark:border-stone-700 shadow-sm text-left">
+                            <ul class="text-xs sm:text-sm text-stone-600 dark:text-stone-300 space-y-2 list-disc list-inside">
+                                <li>負責廠商詢價、比價、議價與合約簽訂作業。</li>
+                                <li>掌握資材管理與物品撥發交期，確保企業營運無間斷。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item: Private Sector Manager -->
+                <div class="timeline-item private-item relative flex flex-col md:flex-row items-start md:items-center">
+                    <div class="absolute left-0 md:left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-lg shadow-md z-10 ring-4 ring-stoneBg-50 dark:ring-stoneBg-900">
+                        <i class="fa-solid fa-chart-line text-sm"></i>
+                    </div>
+
+                    <div class="ml-14 md:ml-0 md:w-1/2 md:pr-12 md:text-right mb-2 md:mb-0">
+                        <span class="inline-block px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-700 dark:text-brand-300 text-xs font-bold">
+                            零售管理期
+                        </span>
+                        <h4 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 mt-1 font-serif-title">業務經理 (Business Manager)</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 font-medium">門市經營與業務團隊帶領</p>
+                    </div>
+
+                    <div class="ml-14 md:ml-0 md:w-1/2 md:pl-12">
+                        <div class="bg-white dark:bg-stoneBg-800 p-6 rounded-2xl border border-stone-200/80 dark:border-stone-700 shadow-sm">
+                            <ul class="text-xs sm:text-sm text-stone-600 dark:text-stone-300 space-y-2 list-disc list-inside">
+                                <li>督導門市營運績效、推動業務銷售目標達成。</li>
+                                <li>跨部門溝通協調、處理顧客溝通與緊急事件應變。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item: Private Sector Accounting -->
+                <div class="timeline-item private-item relative flex flex-col md:flex-row items-start md:items-center">
+                    <div class="absolute left-0 md:left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-stone-800 text-white flex items-center justify-center font-bold text-lg shadow-md z-10 ring-4 ring-stoneBg-50 dark:ring-stoneBg-900">
+                        <i class="fa-solid fa-file-invoice-dollar text-sm"></i>
+                    </div>
+
+                    <div class="ml-14 md:ml-0 md:w-1/2 md:pr-12 md:text-right order-1 md:order-2 mb-2 md:mb-0">
+                        <span class="inline-block px-3 py-1 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs font-bold">
+                            職涯奠基期
+                        </span>
+                        <h4 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 mt-1 font-serif-title">門市業務會計 (Store Accountant)</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 font-medium">門市營運實務與基礎財務</p>
+                    </div>
+
+                    <div class="ml-14 md:ml-0 md:w-1/2 md:pl-12 order-2 md:order-1 md:text-right">
+                        <div class="bg-white dark:bg-stoneBg-800 p-6 rounded-2xl border border-stone-200/80 dark:border-stone-700 shadow-sm text-left">
+                            <ul class="text-xs sm:text-sm text-stone-600 dark:text-stone-300 space-y-2 list-disc list-inside">
+                                <li>負責每日門市營業額結帳、營收對帳與銀行會計入帳。</li>
+                                <li>建立嚴謹的零用金管理與報銷帳務機制。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Public Agencies Showcase -->
+    <section id="agencies" class="py-16 md:py-24">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <span class="text-brand-600 dark:text-brand-400 text-sm font-bold tracking-wider uppercase">GOVERNMENT EXPERIENCE</span>
+                    <h2 class="text-3xl font-extrabold text-stone-900 dark:text-stone-100 mt-1 font-serif-title">2018起 公部門服務機關巡禮</h2>
+                    <p class="text-stone-600 dark:text-stone-400 mt-2 text-sm max-w-xl">
+                        豐富的中央部會與地方特許行政機關任職履歷，展現強大的行政法令理解力與組織融通度。
+                    </p>
+                </div>
+                <div class="mt-4 md:mt-0 text-xs text-stone-500 dark:text-stone-400 font-medium flex items-center gap-1">
+                    <i class="fa-solid fa-circle-info text-brand-500"></i> 共服務過 8 個以上重要公務機關
+                </div>
+            </div>
+
+            <!-- Agency Badges Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- Agency 1 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-stoneBg-800 border border-stone-200/80 dark:border-stone-700/80 shadow-sm hover:border-brand-500 dark:hover:border-brand-500 transition-all flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0 font-bold">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">中央二級部會</span>
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 text-base font-serif-title">數位發展部</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">行政支援與內部業務流程配合</p>
+                    </div>
+                </div>
+
+                <!-- Agency 2 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-stoneBg-800 border border-stone-200/80 dark:border-stone-700/80 shadow-sm hover:border-brand-500 dark:hover:border-brand-500 transition-all flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0 font-bold">
+                        <i class="fa-solid fa-ship"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">交通部所屬</span>
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 text-base font-serif-title">交通部航港局</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">航政行政與財物登記支援</p>
+                    </div>
+                </div>
+
+                <!-- Agency 3 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-stoneBg-800 border border-stone-200/80 dark:border-stone-700/80 shadow-sm hover:border-brand-500 dark:hover:border-brand-500 transition-all flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0 font-bold">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">中央司法行政</span>
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 text-base font-serif-title">法務部</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">機關行政與檔案文獻管理</p>
+                    </div>
+                </div>
+
+                <!-- Agency 4 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-stoneBg-800 border border-stone-200/80 dark:border-stone-700/80 shadow-sm hover:border-brand-500 dark:hover:border-brand-500 transition-all flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0 font-bold">
+                        <i class="fa-solid fa-file-contract"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">新北市政府</span>
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 text-base font-serif-title">新北市政府採購處</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">採購行政與招標合約輔助</p>
+                    </div>
+                </div>
+
+                <!-- Agency 5 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-stoneBg-800 border border-stone-200/80 dark:border-stone-700/80 shadow-sm hover:border-brand-500 dark:hover:border-brand-500 transition-all flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0 font-bold">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">直轄市財政局處</span>
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 text-base font-serif-title">新北市稅捐稽徵處</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">稅務行政與資料查核審查</p>
+                    </div>
+                </div>
+
+                <!-- Agency 6 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-stoneBg-800 border border-stone-200/80 dark:border-stone-700/80 shadow-sm hover:border-brand-500 dark:hover:border-brand-500 transition-all flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0 font-bold">
+                        <i class="fa-solid fa-hand-holding-medical"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">直轄市一級機關</span>
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 text-base font-serif-title">臺北市衛生局</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">公共衛生行政與庶務處置</p>
+                    </div>
+                </div>
+
+                <!-- Agency 7 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-stoneBg-800 border border-stone-200/80 dark:border-stone-700/80 shadow-sm hover:border-brand-500 dark:hover:border-brand-500 transition-all flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0 font-bold">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">直轄市一級機關</span>
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 text-base font-serif-title">臺北市教育局</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">教育行政與各類資材整理</p>
+                    </div>
+                </div>
+
+                <!-- Agency 8 -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-stoneBg-800 border border-stone-200/80 dark:border-stone-700/80 shadow-sm hover:border-brand-500 dark:hover:border-brand-500 transition-all flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0 font-bold">
+                        <i class="fa-solid fa-landmark font-bold"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">地方第一線自治</span>
+                        <h4 class="font-bold text-stone-900 dark:text-stone-100 text-base font-serif-title">新北市瑞芳區公所</h4>
+                        <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">基層民政與區域綜合行政</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Value Proposition / Key Selling Point -->
+    <section class="py-16 bg-gradient-to-r from-stone-900 via-brand-900 to-stone-950 text-white relative overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="space-y-4 max-w-2xl">
+                    <span class="px-3 py-1 rounded-full bg-brand-400/20 text-brand-200 text-xs font-semibold border border-brand-400/30">核心競爭優勢</span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold leading-tight font-serif-title">
+                        快速上手新業務 · 隨即發揮產能
+                    </h2>
+                    <p class="text-stone-300 text-sm sm:text-base leading-relaxed">
+                        「跨產業與跨機關的豐富經驗，培養出極高的環境適應力與問題解決彈性，使我能在短時間內掌握任何新的業務情境與作業規範。」
+                    </p>
+                </div>
+                <div class="shrink-0 w-full sm:w-auto">
+                    <a href="#contact" class="block text-center px-8 py-4 rounded-xl bg-brand-400 text-stone-950 font-bold hover:bg-brand-300 transition-colors shadow-lg">
+                        <i class="fa-solid fa-handshake mr-2 text-stone-950"></i> 立即發出面談邀約
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Action Section -->
+    <section id="contact" class="py-16 md:py-24 bg-stoneBg-50 dark:bg-stoneBg-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-brand-600 dark:text-brand-400 text-sm font-bold tracking-wider uppercase">GET IN TOUCH</span>
+                <h2 class="text-3xl font-extrabold text-stone-900 dark:text-stone-100 mt-1 font-serif-title">與我聯繫洽談</h2>
+                <p class="text-stone-600 dark:text-stone-400 mt-2 text-sm">
+                    非常歡迎機關、企業提供合適職務，期待能發揮 20+ 年積累的專長！
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-stoneBg-800 rounded-3xl p-6 sm:p-10 border border-stone-200/80 dark:border-stone-700 shadow-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Left: Contact Details -->
+                    <div class="space-y-6">
+                        <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100 border-b border-stone-100 dark:border-stone-700 pb-3 font-serif-title">
+                            聯絡與基本資訊
+                        </h3>
+                        
+                        <div class="space-y-4 text-sm text-stone-600 dark:text-stone-300">
+                            <!-- Email Item -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <div class="text-xs text-stone-400">電子郵件</div>
+                                    <a href="mailto:katherineyung168@gmail.com" class="font-semibold text-stone-800 dark:text-stone-100 hover:text-brand-600 dark:hover:text-brand-400 transition-colors break-all text-xs sm:text-sm" id="emailText">
+                                        katherineyung168@gmail.com
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- LinkedIn Item -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0">
+                                    <i class="fa-brands fa-linkedin-in text-lg"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <div class="text-xs text-stone-400">LinkedIn 社群帳號</div>
+                                    <a href="https://www.linkedin.com/in/kai-yin-yang-760529424" target="_blank" rel="noopener noreferrer" class="font-semibold text-brand-600 dark:text-brand-400 hover:underline break-all text-xs sm:text-sm flex items-center gap-1">
+                                        <span>linkedin.com/in/kai-yin-yang-760529424</span>
+                                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] shrink-0"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Phone Item -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-stone-400">聯絡電話</div>
+                                    <div class="font-semibold text-stone-800 dark:text-stone-100">09xx-xxx-xxx (歡迎來信索取)</div>
+                                </div>
+                            </div>
+
+                            <!-- Location Item -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-stone-400">希望工作地點</div>
+                                    <div class="font-semibold text-stone-800 dark:text-stone-100">大台北地區 / 新北市 / 雙北交通便利處</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 space-y-2">
+                            <button id="copyEmailBtn" class="w-full py-2.5 px-4 rounded-xl bg-stone-100 dark:bg-stone-700 hover:bg-stone-200 dark:hover:bg-stone-600 text-stone-700 dark:text-stone-200 text-xs font-bold transition-all flex items-center justify-center gap-2">
+                                <i class="fa-regular fa-copy"></i> 複製電子郵件地址
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Quick Message Demo Form -->
+                    <div>
+                        <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100 border-b border-stone-100 dark:border-stone-700 pb-3 mb-4 font-serif-title">
+                            發送線上訊息
+                        </h3>
+                        <form id="contactForm" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-medium text-stone-600 dark:text-stone-300 mb-1">您的姓名 / 單位名稱</label>
+                                <input type="text" required placeholder="例如：張先生 / XX事業股份有限公司" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-600 dark:bg-stoneBg-900 text-stone-800 dark:text-stone-100 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-stone-600 dark:text-stone-300 mb-1">您的聯絡信箱</label>
+                                <input type="email" required placeholder="name@company.com" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-600 dark:bg-stoneBg-900 text-stone-800 dark:text-stone-100 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-stone-600 dark:text-stone-300 mb-1">洽談內容與留言</label>
+                                <textarea rows="3" required placeholder="請簡單說明職務需求或面談意願..." class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-600 dark:bg-stoneBg-900 text-stone-800 dark:text-stone-100 text-sm focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition-all">
+                                傳送訊息 <i class="fa-solid fa-paper-plane ml-1"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-stoneBg-900 border-t border-stone-200/80 dark:border-stone-800 py-8 text-center text-stone-500 dark:text-stone-400 text-xs">
+        <div class="max-w-6xl mx-auto px-4 space-y-3">
+            <div class="flex justify-center items-center gap-4 text-stone-400">
+                <a href="mailto:katherineyung168@gmail.com" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors" title="Email">
+                    <i class="fa-solid fa-envelope text-base"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/kai-yin-yang-760529424" target="_blank" rel="noopener noreferrer" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors" title="LinkedIn">
+                    <i class="fa-brands fa-linkedin text-base"></i>
+                </a>
+            </div>
+            <p>© 2026 個人履歷品牌網站 · 版權所有</p>
+            <p class="text-stone-400">一頁式響應式網頁設計 · 兼顧手機與電腦完美呈現</p>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMsg" class="text-xs sm:text-sm font-medium">成功複製訊息！</span>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://img.ai365.fans/artworks/84575488-7ab5-4647-bd4d-8ea73ddbc5c5/rnej5aehjb.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Theme Toggle with LocalStorage
+        const themeToggleBtn = document.getElementById('themeToggle');
+        
+        // Load saved theme preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Background Music Control
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicText = document.getElementById('musicText');
+        let isPlaying = false;
+
+        musicToggle.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicIcon.className = 'fa-solid fa-music text-stone-500 dark:text-stone-400';
+                musicToggle.classList.remove('bg-brand-100', 'dark:bg-brand-900/60', 'text-brand-700', 'dark:text-brand-300', 'ring-2', 'ring-brand-400/50');
+                if (musicText) musicText.innerText = '背景音樂';
+                isPlaying = false;
+            } else {
+                bgMusic.play().then(() => {
+                    musicIcon.className = 'fa-solid fa-compact-disc fa-spin text-brand-600 dark:text-brand-300';
+                    musicToggle.classList.add('bg-brand-100', 'dark:bg-brand-900/60', 'text-brand-700', 'dark:text-brand-300', 'ring-2', 'ring-brand-400/50');
+                    if (musicText) musicText.innerText = '播放中';
+                    isPlaying = true;
+                }).catch(err => {
+                    console.error("Audio playback error:", err);
+                    showToast('無法自動播放音樂，請再試一次。');
+                });
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu on link click
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Timeline Filtering Logic
+        const filterAll = document.getElementById('filterAll');
+        const filterGov = document.getElementById('filterGov');
+        const filterPrivate = document.getElementById('filterPrivate');
+        
+        const govItems = document.querySelectorAll('.gov-item');
+        const privateItems = document.querySelectorAll('.private-item');
+        const filterBtns = [filterAll, filterGov, filterPrivate];
+
+        function setActiveTab(selectedBtn) {
+            filterBtns.forEach(btn => {
+                btn.classList.remove('bg-white', 'dark:bg-stone-700', 'text-brand-600', 'dark:text-brand-300', 'shadow-sm');
+                btn.classList.add('text-stone-600', 'dark:text-stone-300');
+            });
+            selectedBtn.classList.add('bg-white', 'dark:bg-stone-700', 'text-brand-600', 'dark:text-brand-300', 'shadow-sm');
+            selectedBtn.classList.remove('text-stone-600', 'dark:text-stone-300');
+        }
+
+        filterAll.addEventListener('click', () => {
+            setActiveTab(filterAll);
+            govItems.forEach(el => el.style.display = 'flex');
+            privateItems.forEach(el => el.style.display = 'flex');
+        });
+
+        filterGov.addEventListener('click', () => {
+            setActiveTab(filterGov);
+            govItems.forEach(el => el.style.display = 'flex');
+            privateItems.forEach(el => el.style.display = 'none');
+        });
+
+        filterPrivate.addEventListener('click', () => {
+            setActiveTab(filterPrivate);
+            govItems.forEach(el => el.style.display = 'none');
+            privateItems.forEach(el => el.style.display = 'flex');
+        });
+
+        // Copy Email Logic
+        const copyEmailBtn = document.getElementById('copyEmailBtn');
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toastMsg');
+
+        function showToast(message) {
+            toastMsg.innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        copyEmailBtn.addEventListener('click', () => {
+            const emailValue = "katherineyung168@gmail.com";
+            navigator.clipboard.writeText(emailValue).then(() => {
+                showToast('已複製 Email 至剪貼簿！');
+            }).catch(() => {
+                const tempInput = document.createElement('input');
+                tempInput.value = emailValue;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast('已複製 Email 至剪貼簿！');
+            });
+        });
+
+        // Contact Form Submission Simulation
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            showToast('訊息已成功送出！將會盡快與您聯繫。');
+            e.target.reset();
+        });
+    </script>
+</body>
+</html>
