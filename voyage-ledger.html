@@ -1,0 +1,2263 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Voyage Ledger 典藏旅途記帳拆帳平台</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Classical Elegance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+TC:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    screens: {
+                        xs: '480px'
+                    },
+                    colors: {
+                        parchment: {
+                            DEFAULT: '#F9F5EC',
+                            dark: '#EFE6D5',
+                            card: '#FFFDF9'
+                        },
+                        burgundy: {
+                            DEFAULT: '#6B2228',
+                            hover: '#52191E',
+                            light: '#F5EBEB'
+                        },
+                        gold: {
+                            DEFAULT: '#C5A059',
+                            dark: '#9A7736',
+                            light: '#E8D2A7'
+                        },
+                        ink: {
+                            DEFAULT: '#2B2625',
+                            muted: '#6B6563',
+                            light: '#9E9793'
+                        },
+                        sage: {
+                            DEFAULT: '#4A6B5D',
+                            light: '#EAF0EC'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        cinzel: ['"Cinzel"', 'serif'],
+                        playfair: ['"Playfair Display"', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F9F5EC;
+            background-image: radial-gradient(#E8D8C3 0.75px, transparent 0.75px);
+            background-size: 16px 16px;
+            color: #2B2625;
+            font-family: "Noto Serif TC", serif;
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+        .parchment-border {
+            border: 2px solid #C5A059;
+            box-shadow: inset 0 0 15px rgba(197, 160, 89, 0.15), 0 4px 12px rgba(43, 38, 37, 0.06);
+        }
+        /* Wax Seal Style Button */
+        .wax-seal {
+            background: radial-gradient(circle at 30% 30%, #8C2D35, #6B2228);
+            box-shadow: 2px 4px 8px rgba(107, 34, 40, 0.3), inset -2px -2px 4px rgba(0,0,0,0.4);
+            transition: all 0.2s ease;
+        }
+        .wax-seal:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 3px 6px 12px rgba(107, 34, 40, 0.4), inset -2px -2px 4px rgba(0,0,0,0.3);
+        }
+        .wax-seal:active {
+            transform: translateY(1px) scale(0.98);
+        }
+        /* Passport Stamp Effect */
+        .stamp-mark {
+            border: 3px dashed #6B2228;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-12deg);
+            opacity: 0.85;
+            text-transform: uppercase;
+        }
+        /* Hide scrollbars for smooth tab scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Prevent Safari iOS zoom on form inputs */
+        @media screen and (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+        /* Toast Animation */
+        @keyframes toastIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-toast {
+            animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes badgePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.55; }
+        }
+        .animate-badge-pulse {
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+        /* Print Media Styles */
+        @media print {
+            header, .no-print, button, select, #fabAddExpense {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .parchment-border {
+                border: 1px solid #999 !important;
+                box-shadow: none !important;
+            }
+        }
+        /* ---------- Dark Mode Overrides ---------- */
+        html.dark body {
+            background-color: #1B1815;
+            background-image: radial-gradient(#2A241F 0.75px, transparent 0.75px);
+            color: #EAE3D8;
+        }
+        html.dark .parchment-border {
+            border-color: rgba(197, 160, 89, 0.55);
+            box-shadow: inset 0 0 15px rgba(197, 160, 89, 0.08), 0 4px 12px rgba(0,0,0,0.45);
+        }
+        html.dark [class*="bg-parchment"] { background-color: #232019 !important; }
+        html.dark [class*="bg-parchment-dark"] { background-color: #2A251E !important; }
+        html.dark [class*="bg-parchment-card"] { background-color: #1F1C17 !important; }
+        html.dark input[class*="bg-parchment"],
+        html.dark select[class*="bg-parchment"],
+        html.dark textarea[class*="bg-parchment"] {
+            background-color: #2A251E !important;
+            color: #EAE3D8 !important;
+            border-color: rgba(197, 160, 89, 0.35) !important;
+        }
+        html.dark .text-ink { color: #EAE3D8 !important; }
+        html.dark .text-ink-muted { color: #B8AE9E !important; }
+        html.dark .text-ink-light { color: #8B8276 !important; }
+        html.dark .text-burgundy { color: #E39A9E !important; }
+        html.dark .bg-burgundy\/10 { background-color: rgba(227,154,158,0.12) !important; }
+        html.dark .bg-gold\/20 { background-color: rgba(197,160,89,0.18) !important; }
+        html.dark .bg-black\/60 { background-color: rgba(0,0,0,0.78) !important; }
+        html.dark .divide-gold\/20 > * + * { border-color: rgba(197,160,89,0.18) !important; }
+        html.dark ::placeholder { color: #7A7268 !important; }
+        html.dark .stage-tab-btn.bg-parchment-dark\/50 { color: #B8AE9E !important; }
+        /* ---------- Timeline ---------- */
+        #timelineContainer > div {
+            padding-bottom: 0.25rem;
+        }
+        /* ---------- PDF Export: prevent elements from being sliced across A4 page breaks ---------- */
+        .avoid-break-block {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            -webkit-column-break-inside: avoid;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col min-h-screen pb-16 sm:pb-0">
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-4 left-4 right-4 sm:left-auto sm:right-5 z-50 flex flex-col gap-2 pointer-events-none items-center sm:items-end"></div>
+    <!-- Mobile Floating Action Button (FAB) -->
+    <button id="fabAddExpense" onclick="openAddExpenseModal()" class="sm:hidden fixed bottom-5 right-5 z-40 wax-seal text-parchment rounded-full w-14 h-14 flex items-center justify-center shadow-2xl border border-gold/50 cursor-pointer active:scale-95 transition-transform">
+        <i class="fa-solid fa-feather-pointed text-gold-light text-xl"></i>
+    </button>
+    <!-- Top Header -->
+    <header class="bg-burgundy text-parchment py-3 sm:py-4 px-4 sm:px-6 shadow-md border-b-2 border-gold relative z-20 no-print">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-compass text-gold text-2xl sm:text-3xl animate-spin-slow"></i>
+                    <div>
+                        <h1 class="font-cinzel text-lg sm:text-2xl font-bold tracking-widest text-gold leading-tight">VOYAGE LEDGER</h1>
+                        <p class="text-[10px] sm:text-xs text-gold-light tracking-wider opacity-80 font-serif">典藏時光 ‧ 典雅旅行拆帳簿</p>
+                    </div>
+                </div>
+                <button onclick="openNewTripModal()" class="sm:hidden bg-gold hover:bg-gold-dark text-burgundy font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 transition-colors shadow">
+                    <i class="fa-solid fa-plus text-[10px]"></i> 新旅程
+                </button>
+            </div>
+            <!-- Trip Selector & Actions (Desktop & Tablet) -->
+            <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-end">
+                <button id="darkModeToggleBtn" onclick="toggleDarkMode()" title="切換深色模式" class="bg-burgundy-hover hover:bg-burgundy text-gold-light border border-gold/40 w-9 h-9 rounded-lg flex items-center justify-center transition-colors shrink-0">
+                    <i class="fa-solid fa-moon text-sm" id="darkModeIcon"></i>
+                </button>
+                <div class="relative flex-1 sm:flex-initial">
+                    <select id="tripSelect" onchange="switchTrip(this.value)" class="w-full bg-burgundy-hover text-parchment border border-gold/50 rounded-lg py-2 px-3 pr-8 text-xs sm:text-sm focus:outline-none focus:border-gold cursor-pointer truncate">
+                        <!-- Options generated dynamically -->
+                    </select>
+                </div>
+                <button onclick="openNewTripModal()" class="hidden sm:flex bg-gold hover:bg-gold-dark text-burgundy font-bold px-3 py-2 rounded-lg text-sm items-center gap-1.5 transition-colors shadow shrink-0">
+                    <i class="fa-solid fa-plus text-xs"></i> 新增行程
+                </button>
+            </div>
+        </div>
+    </header>
+    <!-- Main Workspace Container -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-6 flex flex-col gap-4 sm:gap-6">
+        <!-- Current Trip Info Banner -->
+        <div id="tripHeroBanner" class="parchment-border bg-parchment-card rounded-xl p-4 sm:p-5 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="z-10 w-full md:w-auto">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <span id="tripDates" class="text-[11px] sm:text-xs bg-gold/20 text-burgundy px-2.5 py-0.5 rounded-full font-semibold">2025.10.12 - 2025.10.18</span>
+                    <span id="tripCurrencyBadge" class="text-[11px] sm:text-xs bg-sage/20 text-sage px-2 py-0.5 rounded-full font-semibold">幣別: JPY (日圓)</span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <h2 id="tripTitle" class="text-xl sm:text-3xl font-bold text-burgundy font-serif leading-tight">京都秋楓與古都尋味之旅</h2>
+                    <button onclick="openEditTripModal()" class="no-print text-gold-dark hover:text-burgundy text-sm sm:text-base shrink-0" title="編輯旅程名稱與成員">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                </div>
+                <p id="tripMembersList" class="text-xs text-ink-muted mt-1.5 flex items-center gap-2 flex-wrap">
+                    <i class="fa-solid fa-users text-gold"></i> 成員: Alice, Bob, Charlie, Diana
+                </p>
+            </div>
+            <!-- Currency Quick Converter Indicator -->
+            <div class="z-10 w-full sm:w-auto bg-parchment-dark/60 p-3 rounded-lg border border-gold/30 flex items-center justify-between sm:justify-start gap-4 text-xs">
+                <div>
+                    <div class="text-ink-muted text-[11px]">預設匯率換算</div>
+                    <div class="font-bold text-burgundy text-xs sm:text-sm" id="exchangeRateDisplay">1 JPY = 0.21 TWD</div>
+                </div>
+                <button onclick="openManageRatesModal()" class="text-gold-dark hover:underline font-bold shrink-0 text-xs px-2 py-1 rounded bg-gold/10 sm:bg-transparent no-print">
+                    <i class="fa-solid fa-coins"></i> 管理幣別匯率
+                </button>
+            </div>
+            <!-- Decorative Vintage Stamp Background -->
+            <div class="absolute -right-4 -bottom-6 opacity-10 pointer-events-none text-burgundy hidden sm:block">
+                <i class="fa-solid fa-stamp text-9xl"></i>
+            </div>
+        </div>
+        <!-- Travel Stage Tabs (Mobile Horizontally Scrollable) -->
+        <div class="flex border-b border-gold/40 gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pb-1 text-xs sm:text-sm font-semibold no-print -mx-3 px-3 sm:mx-0 sm:px-0">
+            <button id="tabBtn-during" onclick="switchStage('during')" class="stage-tab-btn whitespace-nowrap shrink-0 py-2 sm:py-2.5 px-3.5 sm:px-5 rounded-t-lg flex items-center gap-1.5 sm:gap-2 transition-all bg-burgundy text-parchment border-t-2 border-x border-gold">
+                <i class="fa-solid fa-coins"></i> 旅中記帳與拆帳
+            </button>
+            <button id="tabBtn-pre" onclick="switchStage('pre')" class="stage-tab-btn whitespace-nowrap shrink-0 py-2 sm:py-2.5 px-3.5 sm:px-5 rounded-t-lg flex items-center gap-1.5 sm:gap-2 transition-all bg-parchment-dark/50 text-ink-muted hover:text-burgundy">
+                <i class="fa-solid fa-clipboard-list"></i> 行前預算與預付
+            </button>
+            <button id="tabBtn-post" onclick="switchStage('post')" class="stage-tab-btn whitespace-nowrap shrink-0 py-2 sm:py-2.5 px-3.5 sm:px-5 rounded-t-lg flex items-center gap-1.5 sm:gap-2 transition-all bg-parchment-dark/50 text-ink-muted hover:text-burgundy">
+                <i class="fa-solid fa-scroll"></i> 旅後結算與典藏
+            </button>
+        </div>
+        <!-- TAB 1: DURING TRIP (記帳與即時拆帳) -->
+        <div id="stage-during" class="space-y-4 sm:space-y-6">
+
+            <!-- Summary Dashboard Cards -->
+            <div class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                <div class="bg-parchment-card p-3.5 sm:p-4 rounded-xl border border-gold/30 shadow-sm flex items-center justify-between">
+                    <div class="min-w-0">
+                        <p class="text-[11px] sm:text-xs text-ink-muted">旅途總花費 (換算 TWD)</p>
+                        <h3 class="text-lg sm:text-xl font-bold text-burgundy mt-0.5" id="totalExpenseForeign">NT$ 0</h3>
+                        <p class="text-[11px] sm:text-xs text-gold-dark mt-0.5 truncate" id="totalExpenseBase">—</p>
+                    </div>
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-burgundy/10 flex items-center justify-center text-burgundy shrink-0">
+                        <i class="fa-solid fa-receipt text-base sm:text-lg"></i>
+                    </div>
+                </div>
+                <div class="bg-parchment-card p-3.5 sm:p-4 rounded-xl border border-gold/30 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] sm:text-xs text-ink-muted">人均應分攤 (台幣)</p>
+                        <h3 class="text-lg sm:text-xl font-bold text-burgundy mt-0.5" id="avgPerPerson">NT$ 0</h3>
+                        <p class="text-[11px] sm:text-xs text-ink-muted mt-0.5">共 <span id="memberCountText">0</span> 位成員分攤</p>
+                    </div>
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold-dark shrink-0">
+                        <i class="fa-solid fa-calculator text-base sm:text-lg"></i>
+                    </div>
+                </div>
+                <div class="bg-parchment-card p-3.5 sm:p-4 rounded-xl border border-gold/30 shadow-sm flex items-center justify-between xs:col-span-2 sm:col-span-1">
+                    <div>
+                        <p class="text-[11px] sm:text-xs text-ink-muted">情緒日誌紀錄</p>
+                        <h3 class="text-lg sm:text-xl font-bold text-sage mt-0.5" id="memoryCountText">0 筆回憶記帳</h3>
+                        <p class="text-[11px] sm:text-xs text-ink-muted mt-0.5">附帶照片與旅行心情</p>
+                    </div>
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-sage/15 flex items-center justify-center text-sage shrink-0">
+                        <i class="fa-solid fa-heart text-base sm:text-lg"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Bar & Filter -->
+            <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+                <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
+                        <span class="text-[11px] sm:text-xs font-semibold text-ink-muted">成員:</span>
+                        <select id="memberFilter" onchange="renderExpenses()" class="w-full sm:w-auto bg-parchment-card border border-gold/40 rounded-lg text-xs py-1.5 px-2 sm:px-3 focus:outline-none">
+                            <option value="ALL">全部成員記錄</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-1.5">
+                        <span class="text-[11px] sm:text-xs font-semibold text-ink-muted">類別:</span>
+                        <select id="categoryFilter" onchange="renderExpenses()" class="w-full sm:w-auto bg-parchment-card border border-gold/40 rounded-lg text-xs py-1.5 px-2 sm:px-3 focus:outline-none">
+                            <option value="ALL">全部類別</option>
+                            <option value="Dining">🍱 餐飲美食</option>
+                            <option value="Shopping">🛍️ 購物紀念</option>
+                            <option value="Transport">🚂 交通票券</option>
+                            <option value="Stay">🏨 住宿旅館</option>
+                            <option value="Tickets">⛩️ 門票體驗</option>
+                            <option value="Other">✨ 其他</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2 sm:col-auto flex items-center gap-1.5 bg-parchment-card border border-gold/40 rounded-lg px-2.5 py-1.5">
+                        <i class="fa-solid fa-magnifying-glass text-ink-muted text-[11px] shrink-0"></i>
+                        <input type="text" id="expenseSearchInput" oninput="renderExpenses()" placeholder="搜尋項目 / 備註 / 地點..." class="bg-transparent text-xs focus:outline-none w-full sm:w-36">
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openQuickBatchModal()" class="flex-1 sm:flex-initial bg-parchment-dark hover:bg-parchment-dark/80 text-burgundy border border-gold/50 font-bold px-3 sm:px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors">
+                        <i class="fa-solid fa-bolt text-gold-dark"></i> 快速批次
+                    </button>
+                    <button onclick="openAddExpenseModal()" class="hidden sm:flex wax-seal text-parchment font-bold px-5 py-2.5 rounded-xl text-sm items-center justify-center gap-2 shadow-lg cursor-pointer">
+                        <i class="fa-solid fa-feather-pointed text-gold-light"></i> 記錄一筆新支出 / 情緒記帳
+                    </button>
+                </div>
+            </div>
+            <!-- Expense List Table -->
+            <div class="parchment-border bg-parchment-card rounded-xl overflow-hidden shadow-sm">
+                <div class="bg-parchment-dark/60 border-b border-gold/30 px-4 sm:px-5 py-2.5 sm:py-3 flex justify-between items-center">
+                    <h3 class="font-serif font-bold text-burgundy text-xs sm:text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-gold-dark"></i> 行程消費日誌 (Ledger Entries)
+                    </h3>
+                    <span class="text-[10px] sm:text-xs text-ink-muted">點擊右側按鈕編輯、退款或刪除</span>
+                </div>
+                <div id="expenseListContainer" class="divide-y divide-gold/20">
+                    <!-- Dynamic Expense Rows -->
+                </div>
+            </div>
+        </div>
+        <!-- TAB 2: PRE TRIP (行前預算與預付) -->
+        <div id="stage-pre" class="space-y-4 sm:space-y-6 hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <!-- Pre-paid Expenses -->
+                <div class="parchment-border bg-parchment-card rounded-xl p-4 sm:p-5">
+                    <div class="flex justify-between items-center mb-3 sm:mb-4">
+                        <h3 class="font-serif font-bold text-burgundy text-sm sm:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-plane-departure text-gold"></i> 行前預付項目 (Pre-paid)
+                        </h3>
+                        <button onclick="openAddPrepaidModal()" class="text-xs bg-gold/20 hover:bg-gold/30 text-burgundy font-bold px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg border border-gold/40 transition-colors">
+                            + 新增預付
+                        </button>
+                    </div>
+                    <p class="text-[11px] sm:text-xs text-ink-muted mb-3 sm:mb-4">機票、住宿訂房、景點票券等出發前已支付之公費款項。</p>
+
+                    <div id="prepaidList" class="space-y-2.5 sm:space-y-3">
+                        <!-- Prepaid items injected here -->
+                    </div>
+                </div>
+                <!-- Category Target Budget Allocation -->
+                <div class="parchment-border bg-parchment-card rounded-xl p-4 sm:p-5">
+                    <div class="flex justify-between items-center mb-3 sm:mb-4">
+                        <h3 class="font-serif font-bold text-burgundy text-sm sm:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie text-gold"></i> 各類別預算規劃 (Limits)
+                        </h3>
+                        <button onclick="openEditBudgetModal()" class="text-xs text-gold-dark hover:underline font-bold">
+                            <i class="fa-solid fa-sliders"></i> 調整預算上限
+                        </button>
+                    </div>
+                    <div id="budgetBarsContainer" class="space-y-3 sm:space-y-4 text-xs">
+                        <!-- Budget progress bars injected dynamically -->
+                    </div>
+                </div>
+            </div>
+            <!-- Pre-trip Wishlist -->
+            <div class="parchment-border bg-parchment-card rounded-xl p-4 sm:p-5">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-serif font-bold text-burgundy text-sm sm:text-base flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-gold"></i> 願望清單 (Wishlist)
+                    </h3>
+                    <button onclick="openAddWishlistModal()" class="text-xs bg-burgundy/10 hover:bg-burgundy/20 text-burgundy font-bold px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg border border-burgundy/30">
+                        + 新增願望
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 sm:gap-3" id="wishlistContainer">
+                    <!-- Wishlist cards -->
+                </div>
+            </div>
+        </div>
+        <!-- TAB 3: POST TRIP (旅後拆帳結算與典藏匯出) -->
+        <div id="stage-post" class="space-y-4 sm:space-y-6 hidden">
+
+            <!-- Unsettled Reminder Banner -->
+            <div id="unsettledReminderBanner" class="hidden bg-gold/20 border border-gold text-burgundy text-[11px] sm:text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center gap-2 no-print">
+                <i class="fa-solid fa-triangle-exclamation animate-badge-pulse"></i> <span></span>
+            </div>
+
+            <!-- Debt Resolution Matrix Box -->
+            <div class="parchment-border bg-parchment-card rounded-xl p-4 sm:p-6 shadow-sm">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-3 sm:pb-4 border-b border-gold/30 gap-3">
+                    <div>
+                        <h3 class="font-serif text-lg sm:text-xl font-bold text-burgundy flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced text-gold"></i> 最佳化拆帳清算方案 (Debt Matrix)
+                        </h3>
+                        <p class="text-[11px] sm:text-xs text-ink-muted mt-0.5">系統已自動簡化轉帳次數，僅需透過以下筆數即可平帳：</p>
+                    </div>
+                    <button onclick="toggleAllSettled()" id="markAllSettledBtn" class="w-full sm:w-auto justify-center bg-sage hover:bg-sage/90 text-parchment px-4 py-2 rounded-lg text-xs font-bold transition-all shadow flex items-center gap-1.5">
+                        <i class="fa-solid fa-check-double"></i> 標記全數結算完成
+                    </button>
+                </div>
+                <div id="settlementSuggestions" class="py-4 sm:py-6 space-y-3 sm:space-y-4">
+                    <!-- Dynamic Settlement Transfers -->
+                </div>
+            </div>
+
+            <!-- Timeline Review -->
+            <div class="parchment-border bg-parchment-card rounded-xl p-4 sm:p-6">
+                <h3 class="font-serif text-lg sm:text-xl font-bold text-burgundy flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-timeline text-gold"></i> 時光回顧時間軸
+                </h3>
+                <div id="timelineContainer" class="relative pl-5 space-y-5 border-l-2 border-gold/30">
+                    <!-- Dynamic timeline entries -->
+                </div>
+            </div>
+
+            <!-- Travel Album & Visual Memory Postcard -->
+            <div class="parchment-border bg-parchment-card rounded-xl p-4 sm:p-6 relative overflow-hidden" id="travelPostcardArea">
+                <div class="flex justify-between items-start sm:items-center mb-4 sm:mb-6 avoid-break-block">
+                    <div>
+                        <span class="text-[10px] sm:text-xs font-cinzel text-gold-dark tracking-widest uppercase">MEMORIES & ANALYTICS</span>
+                        <h3 class="font-serif text-xl sm:text-2xl font-bold text-burgundy">旅行記憶典藏卡 (Summary)</h3>
+                    </div>
+                    <!-- Passport Vintage Stamp -->
+                    <div id="settlementStamp" class="stamp-mark border-burgundy text-burgundy px-2.5 py-0.5 sm:px-3 sm:py-1 font-cinzel font-bold text-[10px] sm:text-xs shrink-0">
+                        PASSED & SETTLED
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div class="avoid-break-block">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-[10px] font-cinzel text-gold-dark tracking-widest uppercase">Smart Summary ‧ 本機生成</span>
+                            <button onclick="regenerateSummary()" class="no-print text-[10px] text-gold-dark hover:underline font-bold shrink-0">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> 重新生成
+                            </button>
+                        </div>
+                        <p class="text-xs sm:text-sm text-ink leading-relaxed font-serif italic mb-4" id="postcardEmotionalSummary">
+                            「漫步於旅途中，我們記錄了每一筆歡笑與滋味。每一筆消費不只是金錢的流動，更是我們共同築起的珍貴記憶。」
+                        </p>
+                        <div class="space-y-2 text-xs text-ink-muted bg-parchment-dark/40 p-3.5 sm:p-4 rounded-lg border border-gold/30 avoid-break-block">
+                            <div class="flex justify-between">
+                                <span>總支出 (TWD 換算):</span>
+                                <span class="font-bold text-burgundy" id="postcardTotalTWD">NT$ 0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>最昂貴的一筆回憶:</span>
+                                <span class="font-bold text-burgundy truncate max-w-[180px] sm:max-w-xs text-right" id="postcardTopExpense">無記錄</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>標籤體驗最多的氛圍:</span>
+                                <span class="font-bold text-sage" id="postcardTopMood">✨ 無記錄</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Category Breakdown Chart -->
+                    <div class="flex justify-center items-center p-2 avoid-break-block">
+                        <div class="w-56 h-56 sm:w-64 sm:h-64 relative">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- Export Action Buttons -->
+                <div class="mt-6 pt-4 border-t border-gold/30 flex flex-wrap gap-2 sm:gap-3 justify-end no-print">
+                    <button onclick="exportCSV()" class="flex-1 sm:flex-initial justify-center bg-parchment-dark hover:bg-parchment-dark/80 text-burgundy border border-gold/50 px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors">
+                        <i class="fa-solid fa-file-csv text-sm text-gold-dark"></i> CSV 試算表
+                    </button>
+                    <button onclick="exportBackupJSON()" class="flex-1 sm:flex-initial justify-center bg-parchment-dark hover:bg-parchment-dark/80 text-burgundy border border-gold/50 px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors">
+                        <i class="fa-solid fa-box-archive text-sm text-gold-dark"></i> 匯出完整備份
+                    </button>
+                    <button onclick="triggerImportFile()" class="flex-1 sm:flex-initial justify-center bg-parchment-dark hover:bg-parchment-dark/80 text-burgundy border border-gold/50 px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors">
+                        <i class="fa-solid fa-upload text-sm text-gold-dark"></i> 匯入備份
+                    </button>
+                    <input type="file" id="importFileInput" accept="application/json" class="hidden" onchange="handleImportFile(event)">
+                    <button onclick="window.print()" class="flex-1 sm:flex-initial justify-center bg-parchment-dark hover:bg-parchment-dark/80 text-burgundy border border-gold/50 px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors">
+                        <i class="fa-solid fa-print text-sm text-gold-dark"></i> 列印頁面
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- MODAL: ADD / EDIT EXPENSE -->
+    <div id="addExpenseModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="parchment-border bg-parchment-card rounded-t-2xl sm:rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gold/30 pb-3">
+                <h3 id="expenseModalTitle" class="font-serif text-base sm:text-lg font-bold text-burgundy flex items-center gap-2">
+                    <i class="fa-solid fa-pen-nib text-gold"></i> 新增消費 / 情緒記帳
+                </h3>
+                <button onclick="closeAddExpenseModal()" class="text-ink-muted hover:text-burgundy text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="expenseForm" onsubmit="handleSaveExpense(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="expEditId" value="">
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">項目名稱 (Expense Item)</label>
+                    <input type="text" id="expItem" required placeholder="例如：錦市場花見團子 / JR Pass 特急" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none focus:border-burgundy">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-ink-muted font-semibold mb-1">金額 (Amount)</label>
+                        <input type="number" step="0.01" id="expAmount" required placeholder="0.00" oninput="if(splitMode==='custom') updateSplitDiff()" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 font-bold text-burgundy text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-ink-muted font-semibold mb-1">幣別 (Currency)</label>
+                        <select id="expCurrency" onchange="if(splitMode==='custom') renderCustomSplitInputs()" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                            <!-- Options injected dynamically from trip rates -->
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">消費類別 (Category)</label>
+                    <select id="expCategory" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                        <option value="Dining">🍱 餐飲美食</option>
+                        <option value="Shopping">🛍️ 購物紀念品</option>
+                        <option value="Transport">🚂 交通票券</option>
+                        <option value="Stay">🏨 住宿旅館</option>
+                        <option value="Tickets">⛩️ 門票與體驗</option>
+                        <option value="Other">✨ 其他開銷</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">地點 (選填，供時光軸顯示)</label>
+                    <input type="text" id="expLocation" placeholder="例如：京都 錦市場" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-ink-muted font-semibold mb-1">付款人 (Paid By)</label>
+                        <select id="expPayer" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                            <!-- Options injected -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-ink-muted font-semibold mb-1">情緒體感標籤 (Mood)</label>
+                        <select id="expMood" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                            <option value="✨ 極致體驗">✨ 極致體驗</option>
+                            <option value="☕ 慢活咖啡">☕ 慢活咖啡</option>
+                            <option value="🏷️ 衝動購物">🏷️ 衝動購物</option>
+                            <option value="😋 地道美味">😋 地道美味</option>
+                            <option value="🚌 必備交通">🚌 必備交通</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Split Members Selection -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-ink-muted font-semibold">分攤成員 (Split Between)</label>
+                        <button type="button" onclick="selectAllSplitMembers(true)" class="text-[10px] text-gold-dark hover:underline p-1">全選</button>
+                    </div>
+                    <div id="splitMembersCheckboxes" class="grid grid-cols-2 gap-2 bg-parchment-dark/40 p-2.5 rounded-lg border border-gold/20">
+                        <!-- Checkboxes dynamically generated -->
+                    </div>
+                    <div class="flex gap-1.5 mt-2">
+                        <button type="button" id="splitModeEqualBtn" onclick="setSplitMode('equal')" class="flex-1 px-2 py-1.5 rounded-lg border text-[11px] font-bold transition-colors">平均分攤</button>
+                        <button type="button" id="splitModeCustomBtn" onclick="setSplitMode('custom')" class="flex-1 px-2 py-1.5 rounded-lg border text-[11px] font-bold transition-colors">自訂金額分攤</button>
+                    </div>
+                    <div id="customSplitContainer" class="hidden mt-2 space-y-1.5 bg-parchment-dark/30 p-2.5 rounded-lg border border-gold/20">
+                        <div id="customSplitInputs" class="space-y-1.5"></div>
+                        <div id="splitDiffIndicator" class="text-[11px] font-bold mt-1"></div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">旅行短記 / 心情文字 (Emotional Note)</label>
+                    <textarea id="expNote" rows="2" placeholder="寫下一兩句這筆消費時的心情或故事..." class="w-full bg-parchment border border-gold/40 rounded-lg p-2 focus:outline-none"></textarea>
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeAddExpenseModal()" class="px-4 py-2 rounded-lg text-ink-muted hover:bg-parchment-dark">取消</button>
+                    <button type="submit" class="wax-seal text-parchment px-5 py-2 rounded-lg font-bold shadow">寫入日誌</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- MODAL: REFUND / DISCOUNT -->
+    <div id="refundModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="parchment-border bg-parchment-card rounded-t-2xl sm:rounded-2xl max-w-sm w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gold/30 pb-3">
+                <h3 class="font-serif text-base sm:text-lg font-bold text-burgundy flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-left text-gold"></i> 新增退款 / 折讓
+                </h3>
+                <button onclick="closeRefundModal()" class="text-ink-muted hover:text-burgundy text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-[11px] text-ink-muted" id="refundContextText"></p>
+            <form onsubmit="handleSaveRefund(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="refundExpId" value="">
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">退款/折讓金額</label>
+                    <input type="number" step="0.01" id="refundAmount" required placeholder="0.00" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 font-bold text-burgundy focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">備註 (選填)</label>
+                    <input type="text" id="refundNote" placeholder="例如：訂房平台退款 / 現場折扣" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                </div>
+                <div id="refundHistoryList" class="space-y-1"></div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeRefundModal()" class="px-4 py-2 rounded-lg text-ink-muted hover:bg-parchment-dark">取消</button>
+                    <button type="submit" class="bg-sage text-parchment px-5 py-2 rounded-lg font-bold shadow hover:bg-sage/90">新增退款紀錄</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- MODAL: QUICK BATCH ENTRY -->
+    <div id="quickBatchModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="parchment-border bg-parchment-card rounded-t-2xl sm:rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gold/30 pb-3">
+                <h3 class="font-serif text-base sm:text-lg font-bold text-burgundy flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-gold"></i> 快速批次記帳
+                </h3>
+                <button onclick="closeQuickBatchModal()" class="text-ink-muted hover:text-burgundy text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-[11px] text-ink-muted leading-relaxed">
+                每行一筆，格式：<br>
+                <code class="bg-parchment-dark/50 px-1.5 py-0.5 rounded text-[10px]">項目,金額,幣別,類別,付款人</code><br>
+                幣別/類別/付款人可留空使用預設值；類別代碼：Dining/Shopping/Transport/Stay/Tickets/Other。此模式下所有成員將平均分攤，如需自訂分攤請於新增後編輯該筆。
+            </p>
+            <form onsubmit="handleQuickBatchSubmit(event)" class="space-y-3 text-xs">
+                <textarea id="quickBatchText" rows="8" placeholder="星巴克咖啡,350,TWD,Dining,Alice&#10;淺草寺御守,1200,JPY,Shopping" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none font-mono text-[11px]"></textarea>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeQuickBatchModal()" class="px-4 py-2 rounded-lg text-ink-muted hover:bg-parchment-dark">取消</button>
+                    <button type="submit" class="wax-seal text-parchment px-5 py-2 rounded-lg font-bold shadow">批次匯入</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- MODAL: SETTLEMENT CONFIRMATION / ATTACHMENT -->
+    <div id="settlementNoteModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="parchment-border bg-parchment-card rounded-t-2xl sm:rounded-2xl max-w-sm w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gold/30 pb-3">
+                <h3 class="font-serif text-base sm:text-lg font-bold text-burgundy flex items-center gap-2">
+                    <i class="fa-solid fa-receipt text-gold"></i> 標記結清憑證
+                </h3>
+                <button onclick="closeSettlementNoteModal()" class="text-ink-muted hover:text-burgundy text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs font-bold text-burgundy" id="settlementNoteContext"></p>
+            <form onsubmit="handleSaveSettlementNote(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="settlementNoteKey" value="">
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">備註 (選填，例如轉帳方式)</label>
+                    <textarea id="settlementNoteText" rows="2" placeholder="例如：LINE Pay 轉帳 / 現金當面結清" class="w-full bg-parchment border border-gold/40 rounded-lg p-2 focus:outline-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">轉帳截圖憑證 (選填)</label>
+                    <input type="file" id="settlementNoteFile" accept="image/*" class="w-full text-[11px] bg-parchment border border-gold/40 rounded-lg p-2 focus:outline-none">
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeSettlementNoteModal()" class="px-4 py-2 rounded-lg text-ink-muted hover:bg-parchment-dark">取消</button>
+                    <button type="submit" class="bg-sage text-parchment px-5 py-2 rounded-lg font-bold shadow hover:bg-sage/90">確認結清</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- MODAL: ADD PREPAID ITEM -->
+    <div id="addPrepaidModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="parchment-border bg-parchment-card rounded-t-2xl sm:rounded-2xl max-w-sm w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gold/30 pb-3">
+                <h3 class="font-serif text-base sm:text-lg font-bold text-burgundy flex items-center gap-2">
+                    <i class="fa-solid fa-plane-departure text-gold"></i> 新增行前預付項目
+                </h3>
+                <button onclick="closeAddPrepaidModal()" class="text-ink-muted hover:text-burgundy text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleSavePrepaid(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">預付項目名稱</label>
+                    <input type="text" id="prepaidName" required placeholder="例如：新幹線來回車票 / 環球影城門票" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">金額 (TWD 台幣)</label>
+                    <input type="number" id="prepaidAmount" required placeholder="0" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 font-bold text-burgundy focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">墊付人員</label>
+                    <select id="prepaidPayer" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                        <!-- Injected dynamically -->
+                    </select>
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeAddPrepaidModal()" class="px-4 py-2 rounded-lg text-ink-muted hover:bg-parchment-dark">取消</button>
+                    <button type="submit" class="bg-burgundy text-parchment px-5 py-2 rounded-lg font-bold shadow hover:bg-burgundy-hover">儲存預付</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- MODAL: ADD WISHLIST ITEM -->
+    <div id="addWishlistModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="parchment-border bg-parchment-card rounded-t-2xl sm:rounded-2xl max-w-sm w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gold/30 pb-3">
+                <h3 class="font-serif text-base sm:text-lg font-bold text-burgundy flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-gold"></i> 新增行前願望清單
+                </h3>
+                <button onclick="closeAddWishlistModal()" class="text-ink-muted hover:text-burgundy text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleSaveWishlist(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">願望或體驗項目</label>
+                    <input type="text" id="wishlistText" required placeholder="例如：穿著和服漫步花見小路" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeAddWishlistModal()" class="px-4 py-2 rounded-lg text-ink-muted hover:bg-parchment-dark">取消</button>
+                    <button type="submit" class="bg-burgundy text-parchment px-5 py-2 rounded-lg font-bold shadow hover:bg-burgundy-hover">新增願望</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- MODAL: MANAGE MULTI-CURRENCY RATES -->
+    <div id="editRateModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="parchment-border bg-parchment-card rounded-t-2xl sm:rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gold/30 pb-3">
+                <h3 class="font-serif text-base sm:text-lg font-bold text-burgundy flex items-center gap-2">
+                    <i class="fa-solid fa-coins text-gold"></i> 管理多幣別匯率
+                </h3>
+                <button onclick="closeManageRatesModal()" class="text-ink-muted hover:text-burgundy text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-[11px] text-ink-muted">設定各幣別兌換新台幣 (TWD) 的匯率，跨國混合幣別行程可分別記錄每種幣別。</p>
+            <div id="ratesRowsContainer" class="space-y-2 text-xs max-h-52 overflow-y-auto"></div>
+            <div class="flex items-end gap-2 pt-2 border-t border-gold/20">
+                <div class="flex-1">
+                    <label class="block text-ink-muted font-semibold mb-1 text-[10px]">新增幣別代碼</label>
+                    <input type="text" id="newRateCurrencyCode" placeholder="例如 GBP" maxlength="6" class="w-full bg-parchment border border-gold/40 rounded-lg p-2 text-xs uppercase focus:outline-none">
+                </div>
+                <div class="flex-1">
+                    <label class="block text-ink-muted font-semibold mb-1 text-[10px]">兌 TWD 匯率</label>
+                    <input type="number" step="0.0001" id="newRateCurrencyValue" placeholder="0.00" class="w-full bg-parchment border border-gold/40 rounded-lg p-2 text-xs focus:outline-none">
+                </div>
+                <button type="button" onclick="addRateRow()" class="bg-gold/20 hover:bg-gold/30 text-burgundy font-bold px-3 py-2 rounded-lg text-xs border border-gold/40 shrink-0">+ 新增</button>
+            </div>
+            <div class="pt-2 flex justify-end gap-2">
+                <button type="button" onclick="closeManageRatesModal()" class="px-4 py-2 rounded-lg text-ink-muted hover:bg-parchment-dark">取消</button>
+                <button type="button" onclick="handleSaveRates()" class="bg-gold text-burgundy font-bold px-5 py-2 rounded-lg shadow hover:bg-gold-dark">更新匯率設定</button>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL: EDIT CATEGORY BUDGETS -->
+    <div id="editBudgetModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="parchment-border bg-parchment-card rounded-t-2xl sm:rounded-2xl max-w-sm w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gold/30 pb-3">
+                <h3 class="font-serif text-base sm:text-lg font-bold text-burgundy flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-gold"></i> 調整類別預算上限 (TWD)
+                </h3>
+                <button onclick="closeEditBudgetModal()" class="text-ink-muted hover:text-burgundy text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleSaveBudgets(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">🍱 餐飲美食 (Dining)</label>
+                    <input type="number" id="budgetDining" required class="w-full bg-parchment border border-gold/40 rounded-lg p-2 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">🛍️ 購物紀念 (Shopping)</label>
+                    <input type="number" id="budgetShopping" required class="w-full bg-parchment border border-gold/40 rounded-lg p-2 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">🚂 交通與景點 (Transport & Tickets)</label>
+                    <input type="number" id="budgetTransport" required class="w-full bg-parchment border border-gold/40 rounded-lg p-2 focus:outline-none">
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeEditBudgetModal()" class="px-4 py-2 rounded-lg text-ink-muted hover:bg-parchment-dark">取消</button>
+                    <button type="submit" class="bg-burgundy text-parchment px-5 py-2 rounded-lg font-bold shadow hover:bg-burgundy-hover">更新預算</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- MODAL: NEW TRIP -->
+    <div id="newTripModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="parchment-border bg-parchment-card rounded-t-2xl sm:rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gold/30 pb-3">
+                <h3 class="font-serif text-base sm:text-lg font-bold text-burgundy flex items-center gap-2">
+                    <i class="fa-solid fa-passport text-gold"></i> 開啟新旅行日誌 (New Trip)
+                </h3>
+                <button onclick="closeNewTripModal()" class="text-ink-muted hover:text-burgundy text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="newTripForm" onsubmit="handleCreateTrip(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">旅程名稱</label>
+                    <input type="text" id="newTripName" required placeholder="例如：巴黎藝術漫步 2026" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-ink-muted font-semibold mb-1">主幣別</label>
+                        <select id="newTripCurrency" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                            <option value="EUR">EUR (歐元)</option>
+                            <option value="JPY">JPY (日圓)</option>
+                            <option value="USD">USD (美元)</option>
+                            <option value="KRW">KRW (韓元)</option>
+                            <option value="TWD">TWD (新台幣)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-ink-muted font-semibold mb-1">預設對 TWD 匯率</label>
+                        <input type="number" step="0.0001" id="newTripRate" required value="34.5" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">旅伴成員 (以逗點分隔)</label>
+                    <input type="text" id="newTripMembers" required value="Alice, Bob, Charlie" placeholder="Alice, Bob, Charlie" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeNewTripModal()" class="px-4 py-2 rounded-lg text-ink-muted hover:bg-parchment-dark">取消</button>
+                    <button type="submit" class="bg-burgundy text-parchment px-5 py-2 rounded-lg font-bold shadow hover:bg-burgundy-hover">建立旅程</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- MODAL: EDIT TRIP (name / dates / members) -->
+    <div id="editTripModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="parchment-border bg-parchment-card rounded-t-2xl sm:rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gold/30 pb-3">
+                <h3 class="font-serif text-base sm:text-lg font-bold text-burgundy flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-gold"></i> 編輯旅程資訊
+                </h3>
+                <button onclick="closeEditTripModal()" class="text-ink-muted hover:text-burgundy text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleSaveTripEdit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">旅程名稱</label>
+                    <input type="text" id="tripEditName" required class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">旅程日期 (例如：2025.10.12 - 2025.10.18)</label>
+                    <input type="text" id="tripEditDates" placeholder="YYYY.MM.DD - YYYY.MM.DD" class="w-full bg-parchment border border-gold/40 rounded-lg p-2.5 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-ink-muted font-semibold mb-1">旅伴成員</label>
+                    <p class="text-[10px] text-ink-muted mb-1.5">直接修改姓名即可重新命名（會自動更新所有相關消費記錄）；已有消費或預付記錄的成員無法直接刪除，請先調整相關紀錄。</p>
+                    <div id="tripEditMembersContainer" class="space-y-1.5 mb-2">
+                        <!-- Dynamic member rows -->
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="tripEditNewMemberInput" placeholder="新增成員姓名" class="flex-1 bg-parchment border border-gold/40 rounded-lg p-2 text-xs focus:outline-none">
+                        <button type="button" onclick="addTripEditMemberRow()" class="bg-gold/20 hover:bg-gold/30 text-burgundy font-bold px-3 py-2 rounded-lg text-xs border border-gold/40 shrink-0">+ 新增</button>
+                    </div>
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeEditTripModal()" class="px-4 py-2 rounded-lg text-ink-muted hover:bg-parchment-dark">取消</button>
+                    <button type="submit" class="bg-burgundy text-parchment px-5 py-2 rounded-lg font-bold shadow hover:bg-burgundy-hover">儲存變更</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        // ============================================================
+        // Data State Management
+        // ============================================================
+        let trips = [
+            {
+                id: 'trip-1',
+                title: '京都秋楓與古都尋味之旅',
+                dates: '2025.10.12 - 2025.10.18',
+                currency: 'JPY',
+                rateToBase: 0.21, // 1 JPY = 0.21 TWD (legacy field, kept for backward compatibility)
+                rates: { JPY: 0.21, TWD: 1, USD: 32, EUR: 34.5, KRW: 0.024 },
+                members: ['Alice', 'Bob', 'Charlie', 'Diana'],
+                isSettled: false,
+                settledAt: null,
+                settledTransfers: {}, // key -> { done, timestamp, note, attachment }
+                customSummary: '',
+                budgets: {
+                    Dining: 18000,
+                    Shopping: 12000,
+                    Transport: 10000
+                },
+                expenses: [
+                    {
+                        id: 'e1',
+                        item: '關西廣域 JR Pass 4人券',
+                        amount: 48000,
+                        currency: 'JPY',
+                        category: 'Transport',
+                        payer: 'Alice',
+                        splitWith: ['Alice', 'Bob', 'Charlie', 'Diana'],
+                        splitMode: 'equal',
+                        splitCustom: null,
+                        refunds: [],
+                        location: '關西機場',
+                        mood: '🚌 必備交通',
+                        note: '開啟古都鐵道之旅的大門！',
+                        date: '2025-10-12'
+                    },
+                    {
+                        id: 'e2',
+                        item: '嵐山米其林懷石料理 Dinner',
+                        amount: 64000,
+                        currency: 'JPY',
+                        category: 'Dining',
+                        payer: 'Bob',
+                        splitWith: ['Alice', 'Bob', 'Charlie', 'Diana'],
+                        splitMode: 'equal',
+                        splitCustom: null,
+                        refunds: [],
+                        location: '嵐山',
+                        mood: '✨ 極致體驗',
+                        note: '庭園造景與季節食材令人讚嘆連連。',
+                        date: '2025-10-14'
+                    },
+                    {
+                        id: 'e3',
+                        item: '錦市場手作煎餅與小吃試吃',
+                        amount: 14000,
+                        currency: 'JPY',
+                        category: 'Dining',
+                        payer: 'Charlie',
+                        splitWith: ['Alice', 'Bob', 'Charlie', 'Diana'],
+                        splitMode: 'equal',
+                        splitCustom: null,
+                        refunds: [],
+                        location: '錦市場',
+                        mood: '😋 地道美味',
+                        note: '大家邊走邊吃，各種町家傳統口味。',
+                        date: '2025-10-15'
+                    },
+                    {
+                        id: 'e4',
+                        item: '清水寺門票與西陣織紀念品',
+                        amount: 12000,
+                        currency: 'JPY',
+                        category: 'Tickets',
+                        payer: 'Diana',
+                        splitWith: ['Alice', 'Bob', 'Charlie', 'Diana'],
+                        splitMode: 'equal',
+                        splitCustom: null,
+                        refunds: [],
+                        location: '清水寺',
+                        mood: '🏷️ 衝動購物',
+                        note: '買了精美的手工印章包做為禮物。',
+                        date: '2025-10-16'
+                    },
+                    {
+                        id: 'e5',
+                        item: '鴨川畔町家 Old Time Cafe',
+                        amount: 8000,
+                        currency: 'JPY',
+                        category: 'Dining',
+                        payer: 'Alice',
+                        splitWith: ['Alice', 'Bob', 'Charlie', 'Diana'],
+                        splitMode: 'equal',
+                        splitCustom: null,
+                        refunds: [],
+                        location: '鴨川',
+                        mood: '☕ 慢活咖啡',
+                        note: '河畔秋風微涼，手沖咖啡的香氣十分治癒。',
+                        date: '2025-10-17'
+                    }
+                ],
+                prepaid: [
+                    { id: 'p1', name: '長榮航空往返機票 (4人)', amount: 62000, payer: 'Alice' },
+                    { id: 'p2', name: '町家包棟民宿 5 晚', amount: 45000, payer: 'Bob' }
+                ],
+                wishlist: [
+                    { id: 'w1', text: '在祇園遇見舞妓', done: true },
+                    { id: 'w2', text: '品嚐一碗道地的鴨町拉麵', done: true },
+                    { id: 'w3', text: '採購伊藤久右衛門抹茶', done: false }
+                ]
+            }
+        ];
+        let currentTripId = 'trip-1';
+        let chartInstance = null;
+        let splitMode = 'equal';
+        let splitCustomDraft = {};
+        let ratesDraft = {};
+        let tripEditMembersDraft = [];
+        const STORAGE_KEY = 'voyageLedgerData_v2';
+        const splitModeActiveClass = 'flex-1 px-2 py-1.5 rounded-lg border text-[11px] font-bold transition-colors bg-burgundy text-parchment border-burgundy';
+        const splitModeInactiveClass = 'flex-1 px-2 py-1.5 rounded-lg border text-[11px] font-bold transition-colors bg-parchment text-ink-muted border-gold/40';
+
+        // ============================================================
+        // Persistence Helpers (LocalStorage)
+        // ============================================================
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ trips: trips, currentTripId: currentTripId }));
+            } catch (err) {
+                console.warn('儲存失敗:', err);
+            }
+        }
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && Array.isArray(parsed.trips) && parsed.trips.length > 0) {
+                        trips = parsed.trips;
+                        currentTripId = parsed.currentTripId || trips[0].id;
+                        migrateTrips();
+                        return true;
+                    }
+                }
+            } catch (err) {
+                console.warn('讀取本機資料失敗:', err);
+            }
+            return false;
+        }
+        function migrateTrips() {
+            trips.forEach(t => {
+                if (!t.rates) {
+                    t.rates = {};
+                    t.rates[t.currency] = t.rateToBase || 1;
+                }
+                if (!t.rates.TWD) t.rates.TWD = 1;
+                if (!t.expenses) t.expenses = [];
+                t.expenses.forEach(e => {
+                    if (!e.refunds) e.refunds = [];
+                    if (!e.splitMode) e.splitMode = 'equal';
+                    if (e.splitCustom === undefined) e.splitCustom = null;
+                    if (e.location === undefined) e.location = '';
+                });
+                if (!t.settledTransfers) t.settledTransfers = {};
+                else {
+                    Object.keys(t.settledTransfers).forEach(k => {
+                        if (typeof t.settledTransfers[k] === 'boolean') {
+                            t.settledTransfers[k] = t.settledTransfers[k]
+                                ? { done: true, timestamp: new Date().toISOString(), note: '' }
+                                : { done: false };
+                        }
+                    });
+                }
+                if (t.customSummary === undefined) t.customSummary = '';
+                if (t.settledAt === undefined) t.settledAt = null;
+                if (!t.prepaid) t.prepaid = [];
+                if (!t.wishlist) t.wishlist = [];
+                if (!t.budgets) t.budgets = { Dining: 20000, Shopping: 15000, Transport: 10000 };
+            });
+        }
+
+        // ============================================================
+        // Currency / Split Calculation Helpers
+        // ============================================================
+        function getRate(trip, currency) {
+            if (currency === 'TWD') return 1;
+            if (trip.rates && trip.rates[currency] !== undefined) return trip.rates[currency];
+            return trip.rateToBase || 1;
+        }
+        function netAmount(exp) {
+            const refundSum = (exp.refunds || []).reduce((s, r) => s + (r.amount || 0), 0);
+            return Math.max(0, exp.amount - refundSum);
+        }
+        function amountTWD(trip, exp) {
+            return netAmount(exp) * getRate(trip, exp.currency);
+        }
+        function getCurrencySymbol(code) {
+            const map = { JPY: '¥', TWD: 'NT$', USD: '$', EUR: '€', KRW: '₩', CNY: '¥', GBP: '£', THB: '฿', HKD: 'HK$', AUD: 'A$' };
+            return map[code] || (code + ' ');
+        }
+
+        // Custom Toast Notification System
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+
+            const bgColor = type === 'success' ? 'bg-burgundy text-parchment' : 'bg-gold-dark text-parchment';
+            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-info';
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-xl text-xs font-serif ${bgColor} border border-gold/50 animate-toast w-full sm:w-auto`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-gold-light text-base shrink-0"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.onload = function() {
+            const savedDark = localStorage.getItem('voyageLedgerDarkMode');
+            if (savedDark === '1') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('darkModeIcon').className = 'fa-solid fa-sun text-sm';
+            }
+            const loaded = loadState();
+            if (!loaded) {
+                migrateTrips();
+                saveState();
+            }
+            renderTripSelector();
+            loadTripData();
+        };
+
+        function getCurrentTrip() {
+            return trips.find(t => t.id === currentTripId) || trips[0];
+        }
+        function renderTripSelector() {
+            const select = document.getElementById('tripSelect');
+            select.innerHTML = trips.map(t => `<option value="${t.id}">${t.title}</option>`).join('');
+            select.value = currentTripId;
+        }
+        function switchTrip(tripId) {
+            currentTripId = tripId;
+            loadTripData();
+            saveState();
+            showToast('已切換行程護照');
+        }
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.getElementById('darkModeIcon').className = isDark ? 'fa-solid fa-sun text-sm' : 'fa-solid fa-moon text-sm';
+            localStorage.setItem('voyageLedgerDarkMode', isDark ? '1' : '0');
+            if (chartInstance) renderChart();
+        }
+        function loadTripData() {
+            const trip = getCurrentTrip();
+            // Banner Info
+            document.getElementById('tripTitle').innerText = trip.title;
+            document.getElementById('tripDates').innerText = trip.dates;
+            document.getElementById('tripCurrencyBadge').innerText = `主幣別: ${trip.currency}`;
+            document.getElementById('tripMembersList').innerHTML = `<i class="fa-solid fa-users text-gold"></i> 成員: ${trip.members.join(', ')}`;
+            const rateCount = trip.rates ? Object.keys(trip.rates).length : 1;
+            document.getElementById('exchangeRateDisplay').innerText = `1 ${trip.currency} = ${getRate(trip, trip.currency)} TWD${rateCount > 2 ? ` (共 ${rateCount} 種幣別)` : ''}`;
+            // Filter Options
+            const filter = document.getElementById('memberFilter');
+            filter.innerHTML = '<option value="ALL">全部成員記錄</option>' +
+                trip.members.map(m => `<option value="${m}">${m} 的支出/分攤</option>`).join('');
+            // Settlement Stamp
+            const stamp = document.getElementById('settlementStamp');
+            if (trip.isSettled) {
+                stamp.className = "stamp-mark border-sage text-sage px-2.5 py-0.5 sm:px-3 sm:py-1 font-cinzel font-bold text-[10px] sm:text-xs shrink-0";
+                stamp.innerText = "FULLY SETTLED";
+            } else {
+                stamp.className = "stamp-mark border-burgundy text-burgundy px-2.5 py-0.5 sm:px-3 sm:py-1 font-cinzel font-bold text-[10px] sm:text-xs opacity-50 shrink-0";
+                stamp.innerText = "UNSETTLED";
+            }
+            renderExpenses();
+            renderPrepaid();
+            renderWishlist();
+            renderBudgets();
+            renderSettlement();
+            renderChart();
+            renderTimeline();
+        }
+        function switchStage(stage) {
+            document.getElementById('stage-during').classList.add('hidden');
+            document.getElementById('stage-pre').classList.add('hidden');
+            document.getElementById('stage-post').classList.add('hidden');
+            document.querySelectorAll('.stage-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-burgundy', 'text-parchment', 'border-t-2', 'border-x', 'border-gold');
+                btn.classList.add('bg-parchment-dark/50', 'text-ink-muted');
+            });
+            const activeBtn = document.getElementById(`tabBtn-${stage}`);
+            activeBtn.classList.add('bg-burgundy', 'text-parchment', 'border-t-2', 'border-x', 'border-gold');
+            activeBtn.classList.remove('bg-parchment-dark/50', 'text-ink-muted');
+            document.getElementById(`stage-${stage}`).classList.remove('hidden');
+            // 記帳浮動按鈕（FAB）只在「旅中記帳」頁籤顯示，避免在其他頁籤（尤其旅後結算頁的匯出按鈕列）擋住畫面
+            const fab = document.getElementById('fabAddExpense');
+            if (fab) fab.style.display = (stage === 'during') ? '' : 'none';
+            if (stage === 'post') {
+                renderSettlement();
+                renderChart();
+                renderTimeline();
+            }
+        }
+
+        // ============================================================
+        // Expense List Rendering
+        // ============================================================
+        function renderExpenses() {
+            const trip = getCurrentTrip();
+            const memberFilterValue = document.getElementById('memberFilter').value;
+            const categoryFilterValue = document.getElementById('categoryFilter').value;
+            const searchEl = document.getElementById('expenseSearchInput');
+            const searchValue = searchEl ? searchEl.value.trim().toLowerCase() : '';
+            const container = document.getElementById('expenseListContainer');
+            let filtered = trip.expenses;
+            if (memberFilterValue !== 'ALL') {
+                filtered = filtered.filter(e => e.payer === memberFilterValue || e.splitWith.includes(memberFilterValue));
+            }
+            if (categoryFilterValue !== 'ALL') {
+                filtered = filtered.filter(e => e.category === categoryFilterValue);
+            }
+            if (searchValue) {
+                filtered = filtered.filter(e =>
+                    (e.item || '').toLowerCase().includes(searchValue) ||
+                    (e.note || '').toLowerCase().includes(searchValue) ||
+                    (e.location || '').toLowerCase().includes(searchValue)
+                );
+            }
+            // Totals (multi-currency aware)
+            const totalTWD = trip.expenses.reduce((s, e) => s + amountTWD(trip, e), 0);
+            const currencyBreakdown = {};
+            trip.expenses.forEach(e => { currencyBreakdown[e.currency] = (currencyBreakdown[e.currency] || 0) + netAmount(e); });
+            const breakdownText = Object.keys(currencyBreakdown)
+                .map(c => `${getCurrencySymbol(c)}${Math.round(currencyBreakdown[c]).toLocaleString()}`)
+                .join(' + ') || '尚無記錄';
+            const perPerson = trip.members.length > 0 ? Math.round(totalTWD / trip.members.length) : 0;
+            document.getElementById('totalExpenseForeign').innerText = `NT$ ${Math.round(totalTWD).toLocaleString()}`;
+            document.getElementById('totalExpenseBase').innerText = breakdownText;
+            document.getElementById('avgPerPerson').innerText = `NT$ ${perPerson.toLocaleString()}`;
+            document.getElementById('memberCountText').innerText = trip.members.length;
+            document.getElementById('memoryCountText').innerText = `${trip.expenses.length} 筆回憶記帳`;
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-ink-muted text-xs font-serif">尚無符合條件的記帳資料，點擊按鈕寫入旅途紀錄。</div>`;
+                return;
+            }
+            container.innerHTML = filtered.map(exp => {
+                const net = netAmount(exp);
+                const twdEquivalent = Math.round(amountTWD(trip, exp));
+                const hasRefund = exp.refunds && exp.refunds.length > 0;
+                const refundTotal = hasRefund ? exp.refunds.reduce((s, r) => s + r.amount, 0) : 0;
+                const sym = getCurrencySymbol(exp.currency);
+                return `
+                <div class="p-3.5 sm:p-4 hover:bg-parchment-dark/30 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 text-xs">
+                    <div class="space-y-1 flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-bold text-burgundy text-sm font-serif">${exp.item}</span>
+                            <span class="bg-gold/20 text-gold-dark px-1.5 py-0.5 rounded text-[10px] font-semibold">${exp.mood || '✨ 回憶'}</span>
+                            ${exp.splitMode === 'custom' ? '<span class="bg-burgundy/10 text-burgundy px-1.5 py-0.5 rounded text-[10px] font-semibold">自訂分攤</span>' : ''}
+                            <span class="text-ink-muted text-[10px]"><i class="fa-regular fa-calendar"></i> ${exp.date || ''}</span>
+                            ${exp.location ? `<span class="text-ink-muted text-[10px]"><i class="fa-solid fa-location-dot"></i> ${exp.location}</span>` : ''}
+                        </div>
+                        <p class="text-ink-muted text-[11px] sm:text-xs flex items-center gap-1.5 flex-wrap">
+                            <span><strong class="text-ink">${exp.payer}</strong> 付款</span> ‧
+                            <span>分攤成員: ${exp.splitWith.join(', ')} (${exp.splitWith.length}人)</span>
+                        </p>
+                        ${exp.note ? `<p class="text-sage italic bg-sage-light/60 p-2 rounded border-l-2 border-sage text-[11px] mt-1"><i class="fa-solid fa-quote-left mr-1 opacity-50"></i>${exp.note}</p>` : ''}
+                        ${hasRefund ? `<p class="text-burgundy text-[10px] mt-1"><i class="fa-solid fa-rotate-left mr-1"></i>已退款/折讓 ${sym}${refundTotal.toLocaleString()}</p>` : ''}
+                    </div>
+                    <div class="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 border-t sm:border-0 border-gold/20 pt-2 sm:pt-0">
+                        <div class="text-left sm:text-right">
+                            ${hasRefund ? `<div class="text-[10px] text-ink-light line-through">${sym} ${exp.amount.toLocaleString()}</div>` : ''}
+                            <div class="font-serif font-bold text-burgundy text-sm sm:text-base">${sym} ${net.toLocaleString()}</div>
+                            <div class="text-[10px] sm:text-[11px] text-ink-muted">≈ NT$ ${twdEquivalent.toLocaleString()}</div>
+                        </div>
+                        <div class="flex items-center gap-1 shrink-0">
+                            <button onclick="openRefundModal('${exp.id}')" class="text-sage hover:bg-sage/10 p-2 rounded-lg transition-colors active:scale-95" title="退款/折讓">
+                                <i class="fa-solid fa-rotate-left text-sm"></i>
+                            </button>
+                            <button onclick="openEditExpenseModal('${exp.id}')" class="text-gold-dark hover:bg-gold/20 p-2 rounded-lg transition-colors active:scale-95" title="編輯項目">
+                                <i class="fa-solid fa-pen-to-square text-sm"></i>
+                            </button>
+                            <button onclick="deleteExpense('${exp.id}')" class="text-burgundy hover:bg-burgundy/10 p-2 rounded-lg transition-colors active:scale-95" title="刪除紀錄">
+                                <i class="fa-solid fa-trash-can text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        // Settlement / Debt Matrix
+        // ============================================================
+        function renderSettlement() {
+            const trip = getCurrentTrip();
+            const balances = {};
+            trip.members.forEach(m => balances[m] = 0);
+            trip.expenses.forEach(exp => {
+                const amtTWD = amountTWD(trip, exp);
+                balances[exp.payer] = (balances[exp.payer] || 0) + amtTWD;
+                if (exp.splitMode === 'custom' && exp.splitCustom && exp.amount > 0) {
+                    const netRatio = netAmount(exp) / exp.amount;
+                    exp.splitWith.forEach(m => {
+                        const shareForeign = (exp.splitCustom[m] || 0) * netRatio;
+                        balances[m] = (balances[m] || 0) - (shareForeign * getRate(trip, exp.currency));
+                    });
+                } else {
+                    const share = exp.splitWith.length > 0 ? amtTWD / exp.splitWith.length : 0;
+                    exp.splitWith.forEach(m => { balances[m] = (balances[m] || 0) - share; });
+                }
+            });
+            let creditors = [];
+            let debtors = [];
+            Object.keys(balances).forEach(m => {
+                const bal = Math.round(balances[m]);
+                if (bal > 1) creditors.push({ member: m, amount: bal });
+                else if (bal < -1) debtors.push({ member: m, amount: -bal });
+            });
+            let transfers = [];
+            let i = 0, j = 0;
+            while (i < debtors.length && j < creditors.length) {
+                let debtor = debtors[i];
+                let creditor = creditors[j];
+                let amount = Math.min(debtor.amount, creditor.amount);
+                transfers.push({
+                    key: `${debtor.member}->${creditor.member}`,
+                    from: debtor.member,
+                    to: creditor.member,
+                    amount: Math.round(amount)
+                });
+                debtor.amount -= amount;
+                creditor.amount -= amount;
+                if (debtor.amount <= 1) i++;
+                if (creditor.amount <= 1) j++;
+            }
+            const container = document.getElementById('settlementSuggestions');
+            if (!trip.settledTransfers) trip.settledTransfers = {};
+            if (transfers.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-sage font-serif font-bold text-xs sm:text-sm"><i class="fa-solid fa-circle-check text-2xl mb-2 block"></i>旅途所有帳目已平，大家互不相欠！</div>`;
+            } else {
+                container.innerHTML = transfers.map(t => {
+                    const record = trip.settledTransfers[t.key];
+                    const isDone = !!(record && record.done);
+                    const metaText = isDone ? `於 ${(record.timestamp || '').replace('T', ' ').slice(0, 16)} 結清${record.note ? '，備註：' + record.note : ''}` : '';
+                    return `
+                    <div class="flex flex-col xs:flex-row items-start xs:items-center justify-between bg-parchment p-3 sm:p-3.5 rounded-xl border border-gold/30 text-xs shadow-sm transition-all gap-2 xs:gap-3 ${isDone ? 'opacity-60 bg-parchment-dark/50' : ''}">
+                        <div class="flex items-center gap-2.5 flex-1 min-w-0">
+                            <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-burgundy/10 text-burgundy flex items-center justify-center font-bold font-serif shrink-0">${t.from[0]}</span>
+                            <div class="text-xs min-w-0">
+                                <div><span class="font-bold text-ink">${t.from}</span> 應轉給 <span class="font-bold text-burgundy">${t.to}</span></div>
+                                ${isDone ? `<div class="text-[10px] text-sage mt-0.5">${metaText}</div>` : ''}
+                            </div>
+                            ${isDone && record.attachment ? `<img src="${record.attachment}" class="w-9 h-9 object-cover rounded-lg border border-gold/40 shrink-0" title="轉帳憑證截圖">` : ''}
+                        </div>
+                        <div class="flex items-center justify-between xs:justify-end gap-3 w-full xs:w-auto border-t xs:border-0 border-gold/20 pt-2 xs:pt-0">
+                            <div class="font-serif font-bold text-xs sm:text-sm text-burgundy">
+                                NT$ ${t.amount.toLocaleString()}
+                            </div>
+                            <button onclick="toggleTransferSettled('${t.key}')" class="px-2.5 py-1 rounded-lg border text-[11px] font-bold transition-all shrink-0 ${isDone ? 'bg-sage text-parchment border-sage' : 'border-gold/50 text-gold-dark hover:bg-gold/20'}">
+                                ${isDone ? '<i class="fa-solid fa-check mr-1"></i>已結清' : '標記結清'}
+                            </button>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+            // Postcard Summary Data Update
+            const totalTWD = Math.round(trip.expenses.reduce((s, e) => s + amountTWD(trip, e), 0));
+            document.getElementById('postcardTotalTWD').innerText = `NT$ ${totalTWD.toLocaleString()}`;
+            if (trip.expenses.length > 0) {
+                const maxExp = [...trip.expenses].sort((a, b) => amountTWD(trip, b) - amountTWD(trip, a))[0];
+                document.getElementById('postcardTopExpense').innerText = `${maxExp.item} (${getCurrencySymbol(maxExp.currency)}${maxExp.amount.toLocaleString()})`;
+                const moodCounts = {};
+                trip.expenses.forEach(e => moodCounts[e.mood] = (moodCounts[e.mood] || 0) + 1);
+                const topMood = Object.keys(moodCounts).reduce((a, b) => moodCounts[a] > moodCounts[b] ? a : b);
+                document.getElementById('postcardTopMood').innerText = topMood;
+            } else {
+                document.getElementById('postcardTopExpense').innerText = "尚無記錄";
+                document.getElementById('postcardTopMood').innerText = "✨ 尚無記錄";
+            }
+            if (!trip.customSummary) trip.customSummary = generateSmartSummary(trip);
+            document.getElementById('postcardEmotionalSummary').innerText = trip.customSummary;
+            renderReminderBanner();
+        }
+        function toggleTransferSettled(key) {
+            const trip = getCurrentTrip();
+            if (!trip.settledTransfers) trip.settledTransfers = {};
+            const current = trip.settledTransfers[key];
+            if (current && current.done) {
+                trip.settledTransfers[key] = { done: false };
+                renderSettlement();
+                saveState();
+                showToast('已取消此筆結清標記');
+            } else {
+                openSettlementNoteModal(key);
+            }
+        }
+        function toggleAllSettled() {
+            const trip = getCurrentTrip();
+            trip.isSettled = !trip.isSettled;
+            trip.settledAt = trip.isSettled ? new Date().toISOString() : null;
+            loadTripData();
+            saveState();
+            showToast(trip.isSettled ? '🎉 恭喜！本趟旅程帳目已全數結算完成！' : '已恢復為未平帳狀態');
+        }
+        function renderReminderBanner() {
+            const trip = getCurrentTrip();
+            const banner = document.getElementById('unsettledReminderBanner');
+            if (!banner) return;
+            const match = (trip.dates || '').match(/(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})\s*-\s*(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})/);
+            if (!match || trip.isSettled) { banner.classList.add('hidden'); return; }
+            const endDate = new Date(parseInt(match[4]), parseInt(match[5]) - 1, parseInt(match[6]));
+            const diffDays = Math.floor((Date.now() - endDate.getTime()) / 86400000);
+            if (diffDays >= 7) {
+                banner.classList.remove('hidden');
+                banner.querySelector('span').innerText = `旅程已結束 ${diffDays} 天，目前仍有帳目尚未完成結清，記得盡快與旅伴核對喔！`;
+            } else {
+                banner.classList.add('hidden');
+            }
+        }
+
+        // ============================================================
+        // Timeline
+        // ============================================================
+        function renderTimeline() {
+            const trip = getCurrentTrip();
+            const container = document.getElementById('timelineContainer');
+            if (!container) return;
+            if (trip.expenses.length === 0) {
+                container.innerHTML = '<p class="text-xs text-ink-muted font-serif">尚無旅途紀錄，開始記帳後這裡會顯示時光軸。</p>';
+                return;
+            }
+            const sorted = [...trip.expenses].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+            container.innerHTML = sorted.map(e => `
+                <div class="relative">
+                    <span class="absolute -left-[26px] top-0.5 w-3 h-3 rounded-full bg-burgundy border-2 border-gold"></span>
+                    <div class="text-[10px] text-ink-muted mb-0.5"><i class="fa-regular fa-calendar"></i> ${e.date || '未記錄日期'}${e.location ? ' ‧ <i class="fa-solid fa-location-dot"></i> ' + e.location : ''}</div>
+                    <div class="text-xs sm:text-sm font-serif font-bold text-burgundy">${e.mood || '✨'} ${e.item}</div>
+                    <div class="text-[11px] text-ink-muted">${e.payer} 付款 ‧ NT$ ${Math.round(amountTWD(trip, e)).toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        // Smart (local) Trip Summary Generation
+        // ============================================================
+        function generateSmartSummary(trip) {
+            if (!trip.expenses || trip.expenses.length === 0) {
+                return '這趟旅程的記帳日誌尚待展開，快去記錄第一筆珍貴的花費與心情吧！';
+            }
+            const totalTWD = trip.expenses.reduce((s, e) => s + amountTWD(trip, e), 0);
+            const moodCounts = {};
+            const catTotals = {};
+            trip.expenses.forEach(e => {
+                moodCounts[e.mood] = (moodCounts[e.mood] || 0) + 1;
+                catTotals[e.category] = (catTotals[e.category] || 0) + amountTWD(trip, e);
+            });
+            const moodKeys = Object.keys(moodCounts);
+            const topMood = moodKeys.reduce((a, b) => moodCounts[a] > moodCounts[b] ? a : b, moodKeys[0]);
+            const catLabelMap = { Dining: '餐飲美食', Shopping: '購物紀念', Transport: '交通票券', Stay: '住宿旅館', Tickets: '門票體驗', Other: '其他開銷' };
+            const catKeys = Object.keys(catTotals);
+            const topCategory = catKeys.reduce((a, b) => catTotals[a] > catTotals[b] ? a : b, catKeys[0]);
+            const maxExp = [...trip.expenses].sort((a, b) => amountTWD(trip, b) - amountTWD(trip, a))[0];
+            const openings = [
+                `這趟「${trip.title}」的旅程，`,
+                `翻開「${trip.title}」的記帳日誌，`,
+                `回顧這段${trip.dates}的旅程，`
+            ];
+            const middles = [
+                `${trip.members.length}位旅伴共同寫下了 ${trip.expenses.length} 筆消費故事，累計花費約 NT$ ${Math.round(totalTWD).toLocaleString()}。`,
+                `大家在${catLabelMap[topCategory] || topCategory}上投入最多心力，成為此行花費的重心。`
+            ];
+            const closings = [
+                `其中最深刻的一筆，莫過於「${maxExp.item}」，而整趟旅程瀰漫著${topMood}的氛圍，值得典藏。`,
+                `尤其「${maxExp.item}」這一筆，搭配上滿滿的${topMood}心情，成了此行最難忘的片段。`
+            ];
+            const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+            return `${pick(openings)}${pick(middles)}${pick(closings)}`;
+        }
+        function regenerateSummary() {
+            const trip = getCurrentTrip();
+            trip.customSummary = generateSmartSummary(trip);
+            document.getElementById('postcardEmotionalSummary').innerText = trip.customSummary;
+            saveState();
+            showToast('已重新生成回憶摘要（本機智慧生成）');
+        }
+
+        // ============================================================
+        // Prepaid / Budgets / Wishlist
+        // ============================================================
+        function renderPrepaid() {
+            const trip = getCurrentTrip();
+            const container = document.getElementById('prepaidList');
+            if (!trip.prepaid || trip.prepaid.length === 0) {
+                container.innerHTML = '<p class="text-xs text-ink-muted">尚未新增行前預付項目。</p>';
+                return;
+            }
+            container.innerHTML = trip.prepaid.map(p => `
+                <div class="flex justify-between items-center bg-parchment-dark/40 p-2.5 rounded-lg text-xs border border-gold/20">
+                    <div>
+                        <div class="font-bold text-burgundy">${p.name}</div>
+                        <div class="text-[10px] text-ink-muted">先墊付人: ${p.payer}</div>
+                    </div>
+                    <div class="flex items-center gap-2.5">
+                        <div class="font-serif font-bold text-ink">NT$ ${p.amount.toLocaleString()}</div>
+                        <button onclick="deletePrepaid('${p.id}')" class="text-burgundy hover:text-burgundy-hover p-1"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        function renderBudgets() {
+            const trip = getCurrentTrip();
+            const container = document.getElementById('budgetBarsContainer');
+            const b = trip.budgets || { Dining: 18000, Shopping: 12000, Transport: 10000 };
+            const spent = { Dining: 0, Shopping: 0, Transport: 0 };
+            trip.expenses.forEach(e => {
+                const twd = amountTWD(trip, e);
+                if (e.category === 'Dining') spent.Dining += twd;
+                else if (e.category === 'Shopping') spent.Shopping += twd;
+                else if (e.category === 'Transport' || e.category === 'Tickets') spent.Transport += twd;
+            });
+            const categories = [
+                { id: 'Dining', label: '🍱 餐飲美食', target: b.Dining, actual: Math.round(spent.Dining), color: 'bg-burgundy' },
+                { id: 'Shopping', label: '🛍️ 購物採買', target: b.Shopping, actual: Math.round(spent.Shopping), color: 'bg-gold' },
+                { id: 'Transport', label: '⛩️ 交通與景點門票', target: b.Transport, actual: Math.round(spent.Transport), color: 'bg-sage' }
+            ];
+            container.innerHTML = categories.map(c => {
+                const pct = c.target > 0 ? Math.min(Math.round((c.actual / c.target) * 100), 100) : 0;
+                return `
+                <div>
+                    <div class="flex justify-between mb-1 text-[11px] sm:text-xs">
+                        <span>${c.label}</span>
+                        <span class="font-bold text-burgundy">NT$ ${c.actual.toLocaleString()} / ${c.target.toLocaleString()} (${pct}%)</span>
+                    </div>
+                    <div class="w-full bg-parchment-dark rounded-full h-2 rounded-full overflow-hidden border border-gold/20">
+                        <div class="${c.color} h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+        function renderWishlist() {
+            const trip = getCurrentTrip();
+            const container = document.getElementById('wishlistContainer');
+            if (!trip.wishlist || trip.wishlist.length === 0) {
+                container.innerHTML = '<p class="text-xs text-ink-muted col-span-full">尚無願望清單。</p>';
+                return;
+            }
+            container.innerHTML = trip.wishlist.map(w => `
+                <div class="bg-parchment border border-gold/30 p-2.5 rounded-lg text-xs flex items-center justify-between gap-2 shadow-sm ${w.done ? 'opacity-60 bg-parchment-dark/30' : ''}">
+                    <label class="flex items-center gap-2 cursor-pointer flex-1 min-w-0">
+                        <input type="checkbox" ${w.done ? 'checked' : ''} onchange="toggleWishlist('${w.id}')" class="rounded accent-burgundy shrink-0">
+                        <span class="truncate ${w.done ? 'line-through text-ink-muted' : 'text-ink font-medium'}">${w.text}</span>
+                    </label>
+                    <button onclick="deleteWishlist('${w.id}')" class="text-ink-muted hover:text-burgundy p-1"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        // Chart
+        // ============================================================
+        function renderChart() {
+            const trip = getCurrentTrip();
+            const categoryTotals = {};
+            trip.expenses.forEach(e => {
+                const twd = amountTWD(trip, e);
+                categoryTotals[e.category] = (categoryTotals[e.category] || 0) + twd;
+            });
+            const labels = Object.keys(categoryTotals).map(c => {
+                switch (c) {
+                    case 'Dining': return '🍱 餐飲美食';
+                    case 'Shopping': return '🛍️ 購物紀念';
+                    case 'Transport': return '🚂 交通票券';
+                    case 'Stay': return '🏨 住宿';
+                    case 'Tickets': return '⛩️ 景點體驗';
+                    default: return '✨ 其他';
+                }
+            });
+            const data = Object.values(categoryTotals);
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+            const isDark = document.documentElement.classList.contains('dark');
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels.length > 0 ? labels : ['無資料'],
+                    datasets: [{
+                        data: data.length > 0 ? data : [1],
+                        backgroundColor: data.length > 0 ? ['#6B2228', '#C5A059', '#4A6B5D', '#9A7736', '#8C2D35', '#2B2625'] : ['#EFE6D5'],
+                        borderWidth: 2,
+                        borderColor: isDark ? '#1F1C17' : '#FFFDF9'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false, // 禁用動畫，確保可即時生成高畫質圖片 Base64
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: 'Noto Serif TC', size: 10 },
+                                color: isDark ? '#EAE3D8' : '#2B2625'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // Expense Modal (Add / Edit) incl. Custom Split
+        // ============================================================
+        function populateCurrencyOptions(selectEl, trip, selectedValue) {
+            const base = trip.rates || { TWD: 1 };
+            const codes = Object.keys(base);
+            if (selectedValue && !codes.includes(selectedValue)) codes.push(selectedValue);
+            selectEl.innerHTML = codes.map(c => `<option value="${c}" ${c === selectedValue ? 'selected' : ''}>${c}${c === trip.currency ? ' (主幣別)' : ''}</option>`).join('');
+        }
+        function openAddExpenseModal() {
+            const trip = getCurrentTrip();
+            document.getElementById('expenseModalTitle').innerHTML = `<i class="fa-solid fa-pen-nib text-gold"></i> 新增消費 / 情緒記帳`;
+            document.getElementById('expEditId').value = '';
+            document.getElementById('expenseForm').reset();
+            document.getElementById('expLocation').value = '';
+            const payerSelect = document.getElementById('expPayer');
+            payerSelect.innerHTML = trip.members.map(m => `<option value="${m}">${m}</option>`).join('');
+            selectAllSplitMembers(true);
+            const currencySelect = document.getElementById('expCurrency');
+            populateCurrencyOptions(currencySelect, trip, trip.currency);
+            splitCustomDraft = {};
+            setSplitMode('equal');
+            document.getElementById('addExpenseModal').classList.remove('hidden');
+        }
+        function openEditExpenseModal(expId) {
+            const trip = getCurrentTrip();
+            const exp = trip.expenses.find(e => e.id === expId);
+            if (!exp) return;
+            document.getElementById('expenseModalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-gold"></i> 編輯消費紀錄`;
+            document.getElementById('expEditId').value = exp.id;
+            document.getElementById('expItem').value = exp.item;
+            document.getElementById('expAmount').value = exp.amount;
+            const currencySelect = document.getElementById('expCurrency');
+            populateCurrencyOptions(currencySelect, trip, exp.currency);
+            document.getElementById('expCategory').value = exp.category;
+            const payerSelect = document.getElementById('expPayer');
+            payerSelect.innerHTML = trip.members.map(m => `<option value="${m}" ${m === exp.payer ? 'selected' : ''}>${m}</option>`).join('');
+            document.getElementById('expMood').value = exp.mood || '✨ 極致體驗';
+            document.getElementById('expNote').value = exp.note || '';
+            document.getElementById('expLocation').value = exp.location || '';
+            const boxContainer = document.getElementById('splitMembersCheckboxes');
+            boxContainer.innerHTML = trip.members.map(m => `
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                    <input type="checkbox" name="splitMember" value="${m}" onchange="refreshSplitUI()" ${exp.splitWith.includes(m) ? 'checked' : ''} class="rounded accent-burgundy">
+                    <span>${m}</span>
+                </label>
+            `).join('');
+            splitCustomDraft = (exp.splitMode === 'custom' && exp.splitCustom) ? { ...exp.splitCustom } : {};
+            setSplitMode(exp.splitMode === 'custom' ? 'custom' : 'equal');
+            document.getElementById('addExpenseModal').classList.remove('hidden');
+        }
+        function closeAddExpenseModal() {
+            document.getElementById('addExpenseModal').classList.add('hidden');
+        }
+        function selectAllSplitMembers(check) {
+            const trip = getCurrentTrip();
+            const boxContainer = document.getElementById('splitMembersCheckboxes');
+            boxContainer.innerHTML = trip.members.map(m => `
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                    <input type="checkbox" name="splitMember" value="${m}" onchange="refreshSplitUI()" ${check ? 'checked' : ''} class="rounded accent-burgundy">
+                    <span>${m}</span>
+                </label>
+            `).join('');
+            refreshSplitUI();
+        }
+        function setSplitMode(mode) {
+            splitMode = mode;
+            const eqBtn = document.getElementById('splitModeEqualBtn');
+            const cuBtn = document.getElementById('splitModeCustomBtn');
+            eqBtn.className = mode === 'equal' ? splitModeActiveClass : splitModeInactiveClass;
+            cuBtn.className = mode === 'custom' ? splitModeActiveClass : splitModeInactiveClass;
+            document.getElementById('customSplitContainer').classList.toggle('hidden', mode !== 'custom');
+            if (mode === 'custom') renderCustomSplitInputs();
+        }
+        function getCheckedSplitMembers() {
+            return Array.from(document.querySelectorAll('input[name="splitMember"]:checked')).map(cb => cb.value);
+        }
+        function refreshSplitUI() {
+            if (splitMode === 'custom') renderCustomSplitInputs();
+        }
+        function renderCustomSplitInputs() {
+            const members = getCheckedSplitMembers();
+            const container = document.getElementById('customSplitInputs');
+            const totalAmount = parseFloat(document.getElementById('expAmount').value) || 0;
+            const currency = document.getElementById('expCurrency').value;
+            if (members.length === 0) {
+                container.innerHTML = '<p class="text-ink-muted text-[11px]">請先勾選分攤成員</p>';
+                updateSplitDiff();
+                return;
+            }
+            container.innerHTML = members.map(m => {
+                const val = splitCustomDraft[m] !== undefined ? splitCustomDraft[m] : Math.round((totalAmount / members.length) * 100) / 100;
+                splitCustomDraft[m] = parseFloat(val) || 0;
+                return `<div class="flex items-center justify-between gap-2">
+                    <span class="text-ink text-[11px] w-16 truncate">${m}</span>
+                    <input type="number" step="0.01" value="${val}" oninput="updateCustomSplitValue('${m}', this.value)" class="flex-1 bg-parchment border border-gold/40 rounded-lg p-1.5 text-xs focus:outline-none">
+                    <span class="text-[10px] text-ink-muted w-10 shrink-0">${currency}</span>
+                </div>`;
+            }).join('');
+            updateSplitDiff();
+        }
+        function updateCustomSplitValue(member, value) {
+            splitCustomDraft[member] = parseFloat(value) || 0;
+            updateSplitDiff();
+        }
+        function updateSplitDiff() {
+            const totalAmount = parseFloat(document.getElementById('expAmount').value) || 0;
+            const currency = document.getElementById('expCurrency').value;
+            const members = getCheckedSplitMembers();
+            const sum = members.reduce((s, m) => s + (splitCustomDraft[m] || 0), 0);
+            const diff = Math.round((totalAmount - sum) * 100) / 100;
+            const el = document.getElementById('splitDiffIndicator');
+            if (!el) return;
+            if (Math.abs(diff) < 0.01) {
+                el.textContent = '✓ 分攤金額總和相符';
+                el.className = 'text-[11px] text-sage font-bold mt-1';
+            } else if (diff > 0) {
+                el.textContent = `尚餘 ${currency} ${diff} 未分配`;
+                el.className = 'text-[11px] text-burgundy font-bold mt-1';
+            } else {
+                el.textContent = `已超出分配 ${currency} ${Math.abs(diff)}`;
+                el.className = 'text-[11px] text-burgundy font-bold mt-1';
+            }
+        }
+        function handleSaveExpense(e) {
+            e.preventDefault();
+            const trip = getCurrentTrip();
+            const editId = document.getElementById('expEditId').value;
+            const item = document.getElementById('expItem').value;
+            const amount = parseFloat(document.getElementById('expAmount').value);
+            const currency = document.getElementById('expCurrency').value;
+            const category = document.getElementById('expCategory').value;
+            const payer = document.getElementById('expPayer').value;
+            const mood = document.getElementById('expMood').value;
+            const note = document.getElementById('expNote').value;
+            const location = document.getElementById('expLocation').value.trim();
+            const checkboxes = document.querySelectorAll('input[name="splitMember"]:checked');
+            const splitWith = Array.from(checkboxes).map(cb => cb.value);
+            if (splitWith.length === 0) {
+                showToast('請至少選擇一位分攤成員！', 'warning');
+                return;
+            }
+            let splitCustom = null;
+            if (splitMode === 'custom') {
+                const sum = splitWith.reduce((s, m) => s + (splitCustomDraft[m] || 0), 0);
+                if (Math.abs(sum - amount) > 0.01) {
+                    showToast(`自訂分攤金額總和 (${sum.toFixed(2)}) 需等於支出總額 (${amount})，請重新調整`, 'warning');
+                    return;
+                }
+                splitCustom = {};
+                splitWith.forEach(m => { splitCustom[m] = splitCustomDraft[m] || 0; });
+            }
+            if (editId) {
+                const index = trip.expenses.findIndex(x => x.id === editId);
+                if (index !== -1) {
+                    trip.expenses[index] = { ...trip.expenses[index], item, amount, currency, category, payer, splitWith, mood, note, location, splitMode, splitCustom };
+                    showToast('已成功更新消費紀錄');
+                }
+            } else {
+                const newExp = {
+                    id: 'e' + Date.now(),
+                    item, amount, currency, category, payer, splitWith, mood, note, location,
+                    splitMode, splitCustom, refunds: [],
+                    date: new Date().toISOString().split('T')[0]
+                };
+                trip.expenses.unshift(newExp);
+                showToast('已寫入一筆消費日誌！');
+            }
+            closeAddExpenseModal();
+            renderExpenses();
+            if (!document.getElementById('stage-post').classList.contains('hidden')) {
+                renderSettlement();
+                renderChart();
+                renderTimeline();
+            }
+            saveState();
+        }
+        function deleteExpense(expId) {
+            const trip = getCurrentTrip();
+            trip.expenses = trip.expenses.filter(e => e.id !== expId);
+            renderExpenses();
+            if (!document.getElementById('stage-post').classList.contains('hidden')) {
+                renderSettlement();
+                renderChart();
+                renderTimeline();
+            }
+            saveState();
+            showToast('已刪除消費紀錄');
+        }
+
+        // ============================================================
+        // Refund / Discount
+        // ============================================================
+        function openRefundModal(expId) {
+            const trip = getCurrentTrip();
+            const exp = trip.expenses.find(e => e.id === expId);
+            if (!exp) return;
+            document.getElementById('refundExpId').value = expId;
+            document.getElementById('refundAmount').value = '';
+            document.getElementById('refundNote').value = '';
+            document.getElementById('refundContextText').innerText = `項目「${exp.item}」原始金額 ${getCurrencySymbol(exp.currency)}${exp.amount.toLocaleString()}，目前淨額 ${getCurrencySymbol(exp.currency)}${netAmount(exp).toLocaleString()}`;
+            renderRefundHistory(exp);
+            document.getElementById('refundModal').classList.remove('hidden');
+        }
+        function closeRefundModal() {
+            document.getElementById('refundModal').classList.add('hidden');
+        }
+        function renderRefundHistory(exp) {
+            const el = document.getElementById('refundHistoryList');
+            if (!exp.refunds || exp.refunds.length === 0) { el.innerHTML = ''; return; }
+            el.innerHTML = '<div class="text-[10px] text-ink-muted font-semibold mt-1">歷史退款紀錄:</div>' +
+                exp.refunds.map((r, idx) => `<div class="flex justify-between items-center bg-sage-light/50 px-2 py-1 rounded text-[10px]"><span>-${getCurrencySymbol(exp.currency)}${r.amount.toLocaleString()} ${r.note ? '(' + r.note + ')' : ''}</span><button type="button" onclick="removeRefund('${exp.id}', ${idx})" class="text-burgundy"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
+        }
+        function handleSaveRefund(e) {
+            e.preventDefault();
+            const trip = getCurrentTrip();
+            const expId = document.getElementById('refundExpId').value;
+            const exp = trip.expenses.find(x => x.id === expId);
+            if (!exp) return;
+            const amount = parseFloat(document.getElementById('refundAmount').value);
+            const note = document.getElementById('refundNote').value.trim();
+            if (!amount || amount <= 0) { showToast('請輸入有效的退款金額', 'warning'); return; }
+            if (amount > netAmount(exp) + 0.01) { showToast('退款金額不可超過目前淨額', 'warning'); return; }
+            if (!exp.refunds) exp.refunds = [];
+            exp.refunds.push({ amount, note, date: new Date().toISOString().split('T')[0] });
+            showToast('已新增退款/折讓紀錄');
+            renderRefundHistory(exp);
+            document.getElementById('refundAmount').value = '';
+            document.getElementById('refundNote').value = '';
+            renderExpenses();
+            if (!document.getElementById('stage-post').classList.contains('hidden')) {
+                renderSettlement();
+                renderChart();
+                renderTimeline();
+            }
+            saveState();
+        }
+        function removeRefund(expId, idx) {
+            const trip = getCurrentTrip();
+            const exp = trip.expenses.find(x => x.id === expId);
+            if (!exp || !exp.refunds) return;
+            exp.refunds.splice(idx, 1);
+            renderRefundHistory(exp);
+            renderExpenses();
+            if (!document.getElementById('stage-post').classList.contains('hidden')) {
+                renderSettlement();
+                renderChart();
+                renderTimeline();
+            }
+            saveState();
+            showToast('已移除退款紀錄');
+        }
+
+        // ============================================================
+        // Quick Batch Entry
+        // ============================================================
+        function openQuickBatchModal() {
+            document.getElementById('quickBatchText').value = '';
+            document.getElementById('quickBatchModal').classList.remove('hidden');
+        }
+        function closeQuickBatchModal() {
+            document.getElementById('quickBatchModal').classList.add('hidden');
+        }
+        function handleQuickBatchSubmit(e) {
+            e.preventDefault();
+            const trip = getCurrentTrip();
+            const raw = document.getElementById('quickBatchText').value;
+            const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+            const validCategories = ['Dining', 'Shopping', 'Transport', 'Stay', 'Tickets', 'Other'];
+            let success = 0, skipped = 0;
+            lines.forEach(line => {
+                const parts = line.split(',').map(p => p.trim());
+                const item = parts[0];
+                const amount = parseFloat(parts[1]);
+                if (!item || !amount || amount <= 0) { skipped++; return; }
+                const currency = parts[2] || trip.currency;
+                const category = validCategories.includes(parts[3]) ? parts[3] : 'Other';
+                const payer = (parts[4] && trip.members.includes(parts[4])) ? parts[4] : trip.members[0];
+                trip.expenses.unshift({
+                    id: 'e' + Date.now() + Math.random().toString(36).slice(2, 6),
+                    item, amount, currency, category, payer,
+                    splitWith: [...trip.members],
+                    splitMode: 'equal',
+                    splitCustom: null,
+                    mood: '✨ 極致體驗',
+                    note: '',
+                    location: '',
+                    refunds: [],
+                    date: new Date().toISOString().split('T')[0]
+                });
+                success++;
+            });
+            closeQuickBatchModal();
+            renderExpenses();
+            if (!document.getElementById('stage-post').classList.contains('hidden')) {
+                renderSettlement();
+                renderChart();
+                renderTimeline();
+            }
+            saveState();
+            showToast(`批次匯入完成：成功 ${success} 筆${skipped > 0 ? '，略過 ' + skipped + ' 筆格式錯誤' : ''}`);
+        }
+
+        // ============================================================
+        // Settlement Note / Attachment Modal
+        // ============================================================
+        function openSettlementNoteModal(key) {
+            document.getElementById('settlementNoteKey').value = key;
+            document.getElementById('settlementNoteText').value = '';
+            document.getElementById('settlementNoteFile').value = '';
+            const parts = key.split('->');
+            document.getElementById('settlementNoteContext').innerText = `${parts[0]} → ${parts[1]}`;
+            document.getElementById('settlementNoteModal').classList.remove('hidden');
+        }
+        function closeSettlementNoteModal() {
+            document.getElementById('settlementNoteModal').classList.add('hidden');
+        }
+        function handleSaveSettlementNote(e) {
+            e.preventDefault();
+            const trip = getCurrentTrip();
+            const key = document.getElementById('settlementNoteKey').value;
+            const note = document.getElementById('settlementNoteText').value.trim();
+            const fileInput = document.getElementById('settlementNoteFile');
+            const file = fileInput.files && fileInput.files[0];
+            function finalize(attachment) {
+                trip.settledTransfers[key] = { done: true, timestamp: new Date().toISOString(), note, attachment: attachment || '' };
+                closeSettlementNoteModal();
+                renderSettlement();
+                saveState();
+                showToast('已標記結清並保存憑證紀錄');
+            }
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(ev) { finalize(ev.target.result); };
+                reader.onerror = function() { finalize(''); };
+                reader.readAsDataURL(file);
+            } else {
+                finalize('');
+            }
+        }
+
+        // ============================================================
+        // Prepaid / Wishlist / Budgets Handlers
+        // ============================================================
+        function openAddPrepaidModal() {
+            const trip = getCurrentTrip();
+            const payerSelect = document.getElementById('prepaidPayer');
+            payerSelect.innerHTML = trip.members.map(m => `<option value="${m}">${m}</option>`).join('');
+            document.getElementById('addPrepaidModal').classList.remove('hidden');
+        }
+        function closeAddPrepaidModal() {
+            document.getElementById('addPrepaidModal').classList.add('hidden');
+        }
+        function handleSavePrepaid(e) {
+            e.preventDefault();
+            const trip = getCurrentTrip();
+            const name = document.getElementById('prepaidName').value;
+            const amount = parseFloat(document.getElementById('prepaidAmount').value);
+            const payer = document.getElementById('prepaidPayer').value;
+            if (!trip.prepaid) trip.prepaid = [];
+            trip.prepaid.push({ id: 'p' + Date.now(), name, amount, payer });
+            closeAddPrepaidModal();
+            renderPrepaid();
+            saveState();
+            showToast('已新增預付項目');
+        }
+        function deletePrepaid(id) {
+            const trip = getCurrentTrip();
+            trip.prepaid = trip.prepaid.filter(p => p.id !== id);
+            renderPrepaid();
+            saveState();
+            showToast('已刪除預付項目');
+        }
+        function openAddWishlistModal() {
+            document.getElementById('addWishlistModal').classList.remove('hidden');
+        }
+        function closeAddWishlistModal() {
+            document.getElementById('addWishlistModal').classList.add('hidden');
+        }
+        function handleSaveWishlist(e) {
+            e.preventDefault();
+            const trip = getCurrentTrip();
+            const text = document.getElementById('wishlistText').value;
+            if (!trip.wishlist) trip.wishlist = [];
+            trip.wishlist.push({ id: 'w' + Date.now(), text, done: false });
+            closeAddWishlistModal();
+            renderWishlist();
+            saveState();
+            showToast('已新增行前願望！');
+        }
+        function toggleWishlist(id) {
+            const trip = getCurrentTrip();
+            const item = trip.wishlist.find(w => w.id === id);
+            if (item) {
+                item.done = !item.done;
+                renderWishlist();
+                saveState();
+            }
+        }
+        function deleteWishlist(id) {
+            const trip = getCurrentTrip();
+            trip.wishlist = trip.wishlist.filter(w => w.id !== id);
+            renderWishlist();
+            saveState();
+        }
+        function openEditBudgetModal() {
+            const trip = getCurrentTrip();
+            const b = trip.budgets || { Dining: 18000, Shopping: 12000, Transport: 10000 };
+            document.getElementById('budgetDining').value = b.Dining;
+            document.getElementById('budgetShopping').value = b.Shopping;
+            document.getElementById('budgetTransport').value = b.Transport;
+            document.getElementById('editBudgetModal').classList.remove('hidden');
+        }
+        function closeEditBudgetModal() {
+            document.getElementById('editBudgetModal').classList.add('hidden');
+        }
+        function handleSaveBudgets(e) {
+            e.preventDefault();
+            const trip = getCurrentTrip();
+            trip.budgets = {
+                Dining: parseFloat(document.getElementById('budgetDining').value) || 0,
+                Shopping: parseFloat(document.getElementById('budgetShopping').value) || 0,
+                Transport: parseFloat(document.getElementById('budgetTransport').value) || 0
+            };
+            closeEditBudgetModal();
+            renderBudgets();
+            saveState();
+            showToast('已更新類別預算上限');
+        }
+
+        // ============================================================
+        // Multi-Currency Rate Management
+        // ============================================================
+        function openManageRatesModal() {
+            const trip = getCurrentTrip();
+            ratesDraft = { ...(trip.rates || {}) };
+            if (!ratesDraft.TWD) ratesDraft.TWD = 1;
+            if (ratesDraft[trip.currency] === undefined) ratesDraft[trip.currency] = trip.rateToBase || 1;
+            renderRatesRows();
+            document.getElementById('editRateModal').classList.remove('hidden');
+        }
+        function closeManageRatesModal() {
+            document.getElementById('editRateModal').classList.add('hidden');
+        }
+        function renderRatesRows() {
+            const container = document.getElementById('ratesRowsContainer');
+            container.innerHTML = Object.keys(ratesDraft).map(code => `
+                <div class="flex items-center gap-2">
+                    <span class="w-14 font-bold text-burgundy">${code}</span>
+                    <input type="number" step="0.0001" value="${ratesDraft[code]}" ${code === 'TWD' ? 'disabled' : ''} oninput="ratesDraft['${code}'] = parseFloat(this.value) || 0" class="flex-1 bg-parchment border border-gold/40 rounded-lg p-2 text-xs focus:outline-none ${code === 'TWD' ? 'opacity-50' : ''}">
+                    <span class="text-[10px] text-ink-muted w-10 shrink-0">TWD</span>
+                    ${code !== 'TWD' ? `<button type="button" onclick="removeRateRow('${code}')" class="text-burgundy p-1"><i class="fa-solid fa-trash-can"></i></button>` : '<span class="w-6 shrink-0"></span>'}
+                </div>
+            `).join('');
+        }
+        function addRateRow() {
+            const codeInput = document.getElementById('newRateCurrencyCode');
+            const valInput = document.getElementById('newRateCurrencyValue');
+            const code = codeInput.value.trim().toUpperCase();
+            const val = parseFloat(valInput.value);
+            if (!code) { showToast('請輸入幣別代碼', 'warning'); return; }
+            if (ratesDraft[code] !== undefined) { showToast('此幣別已存在', 'warning'); return; }
+            ratesDraft[code] = val || 0;
+            codeInput.value = '';
+            valInput.value = '';
+            renderRatesRows();
+        }
+        function removeRateRow(code) {
+            delete ratesDraft[code];
+            renderRatesRows();
+        }
+        function handleSaveRates() {
+            const trip = getCurrentTrip();
+            trip.rates = { ...ratesDraft, TWD: 1 };
+            if (trip.rates[trip.currency] !== undefined) trip.rateToBase = trip.rates[trip.currency];
+            loadTripData();
+            closeManageRatesModal();
+            saveState();
+            showToast('已更新多幣別匯率設定');
+        }
+
+        // ============================================================
+        // New Trip
+        // ============================================================
+        function openNewTripModal() {
+            document.getElementById('newTripModal').classList.remove('hidden');
+        }
+        function closeNewTripModal() {
+            document.getElementById('newTripModal').classList.add('hidden');
+        }
+        function handleCreateTrip(e) {
+            e.preventDefault();
+            const title = document.getElementById('newTripName').value;
+            const currency = document.getElementById('newTripCurrency').value;
+            const rateToBase = parseFloat(document.getElementById('newTripRate').value);
+            const membersStr = document.getElementById('newTripMembers').value;
+            const members = membersStr.split(',').map(m => m.trim()).filter(m => m);
+            if (members.length === 0) {
+                showToast('請至少輸入一位旅伴成員！', 'warning');
+                return;
+            }
+            const rates = { TWD: 1 };
+            if (currency !== 'TWD') rates[currency] = rateToBase;
+            const newTrip = {
+                id: 'trip-' + Date.now(),
+                title,
+                dates: '2026 典藏行程',
+                currency,
+                rateToBase,
+                rates,
+                members,
+                isSettled: false,
+                settledAt: null,
+                settledTransfers: {},
+                customSummary: '',
+                budgets: { Dining: 20000, Shopping: 15000, Transport: 10000 },
+                expenses: [],
+                prepaid: [],
+                wishlist: [{ id: 'w1', text: '品嚐在地道地美食', done: false }]
+            };
+            trips.push(newTrip);
+            currentTripId = newTrip.id;
+            renderTripSelector();
+            loadTripData();
+            closeNewTripModal();
+            saveState();
+            showToast('開啟全新旅程日誌成功！');
+        }
+
+        // ============================================================
+        // Edit Trip (name / dates / members)
+        // ============================================================
+        function openEditTripModal() {
+            const trip = getCurrentTrip();
+            document.getElementById('tripEditName').value = trip.title;
+            document.getElementById('tripEditDates').value = trip.dates;
+            document.getElementById('tripEditNewMemberInput').value = '';
+            tripEditMembersDraft = trip.members.map(m => ({ original: m, value: m }));
+            renderTripEditMembers();
+            document.getElementById('editTripModal').classList.remove('hidden');
+        }
+        function closeEditTripModal() {
+            document.getElementById('editTripModal').classList.add('hidden');
+        }
+        function renderTripEditMembers() {
+            const container = document.getElementById('tripEditMembersContainer');
+            container.innerHTML = tripEditMembersDraft.map((row, idx) => `
+                <div class="flex items-center gap-2">
+                    <input type="text" value="${row.value}" oninput="updateTripEditMemberValue(${idx}, this.value)" class="flex-1 bg-parchment border border-gold/40 rounded-lg p-2 text-xs focus:outline-none">
+                    <button type="button" onclick="removeTripEditMemberRow(${idx})" class="text-burgundy p-1.5 hover:bg-burgundy/10 rounded-lg" title="移除此成員"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            `).join('');
+        }
+        function updateTripEditMemberValue(idx, value) {
+            if (tripEditMembersDraft[idx]) tripEditMembersDraft[idx].value = value.trim();
+        }
+        function removeTripEditMemberRow(idx) {
+            tripEditMembersDraft.splice(idx, 1);
+            renderTripEditMembers();
+        }
+        function addTripEditMemberRow() {
+            const input = document.getElementById('tripEditNewMemberInput');
+            const val = input.value.trim();
+            if (!val) { showToast('請輸入成員姓名', 'warning'); return; }
+            if (tripEditMembersDraft.some(r => r.value === val)) { showToast('此成員姓名已存在', 'warning'); return; }
+            tripEditMembersDraft.push({ original: null, value: val });
+            input.value = '';
+            renderTripEditMembers();
+        }
+        function renameMemberEverywhere(trip, oldName, newName) {
+            trip.expenses.forEach(e => {
+                if (e.payer === oldName) e.payer = newName;
+                e.splitWith = e.splitWith.map(m => m === oldName ? newName : m);
+                if (e.splitCustom && e.splitCustom[oldName] !== undefined) {
+                    e.splitCustom[newName] = e.splitCustom[oldName];
+                    delete e.splitCustom[oldName];
+                }
+            });
+            (trip.prepaid || []).forEach(p => { if (p.payer === oldName) p.payer = newName; });
+            if (trip.settledTransfers) {
+                const renamed = {};
+                Object.keys(trip.settledTransfers).forEach(key => {
+                    const parts = key.split('->');
+                    const from = parts[0] === oldName ? newName : parts[0];
+                    const to = parts[1] === oldName ? newName : parts[1];
+                    renamed[`${from}->${to}`] = trip.settledTransfers[key];
+                });
+                trip.settledTransfers = renamed;
+            }
+        }
+        function handleSaveTripEdit(e) {
+            e.preventDefault();
+            const trip = getCurrentTrip();
+            const newName = document.getElementById('tripEditName').value.trim();
+            const newDates = document.getElementById('tripEditDates').value.trim();
+            if (!newName) { showToast('旅程名稱不可為空', 'warning'); return; }
+            const finalMembers = tripEditMembersDraft.map(r => r.value).filter(Boolean);
+            if (finalMembers.length === 0) { showToast('請至少保留一位旅伴成員', 'warning'); return; }
+            const dupCheck = new Set();
+            for (const m of finalMembers) {
+                if (dupCheck.has(m)) { showToast(`成員姓名「${m}」重複，請修正`, 'warning'); return; }
+                dupCheck.add(m);
+            }
+            // 找出被移除的原始成員，並檢查是否仍有相關紀錄
+            const keptOriginals = tripEditMembersDraft.filter(r => r.original).map(r => r.original);
+            const removedMembers = trip.members.filter(m => !keptOriginals.includes(m));
+            for (const rm of removedMembers) {
+                const usedInExpense = trip.expenses.some(exp => exp.payer === rm || exp.splitWith.includes(rm));
+                const usedInPrepaid = (trip.prepaid || []).some(p => p.payer === rm);
+                const usedInSettlement = trip.settledTransfers && Object.keys(trip.settledTransfers).some(k => {
+                    const parts = k.split('->');
+                    return parts[0] === rm || parts[1] === rm;
+                });
+                if (usedInExpense || usedInPrepaid || usedInSettlement) {
+                    showToast(`無法移除成員「${rm}」，仍有消費、預付或結算紀錄與其相關，請先調整或刪除相關紀錄`, 'warning');
+                    return;
+                }
+            }
+            // 套用重新命名（沿用同一列但姓名有變動）
+            tripEditMembersDraft.forEach(row => {
+                if (row.original && row.original !== row.value) {
+                    renameMemberEverywhere(trip, row.original, row.value);
+                }
+            });
+            trip.title = newName;
+            trip.dates = newDates;
+            trip.members = finalMembers;
+            renderTripSelector();
+            loadTripData();
+            closeEditTripModal();
+            saveState();
+            showToast('已更新旅程資訊');
+        }
+
+        // ============================================================
+        // Export: CSV / PDF / JSON Backup / Import
+        // ============================================================
+        function exportCSV() {
+            const trip = getCurrentTrip();
+            let csv = '\uFEFF'; // UTF-8 BOM
+            csv += '項目名稱,原始金額,幣別,退款折讓,淨額,台幣折算,類別,付款人,分攤方式,分攤成員,地點,情緒標籤,備註,日期\n';
+            trip.expenses.forEach(e => {
+                const refundTotal = (e.refunds || []).reduce((s, r) => s + r.amount, 0);
+                const twd = Math.round(amountTWD(trip, e));
+                csv += `"${e.item}",${e.amount},${e.currency},${refundTotal},${netAmount(e)},${twd},${e.category},${e.payer},${e.splitMode === 'custom' ? '自訂' : '平均'},"${e.splitWith.join(';')}","${e.location || ''}",${e.mood || ''},"${e.note || ''}",${e.date || ''}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${trip.title}_典藏記帳明細.csv`;
+            link.click();
+            showToast('已匯出 CSV 明細表');
+        }
+        function exportBackupJSON() {
+            const data = JSON.stringify({ trips: trips, currentTripId: currentTripId }, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `voyage_ledger_備份_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            showToast('已匯出完整備份 JSON');
+        }
+        function triggerImportFile() {
+            document.getElementById('importFileInput').click();
+        }
+        function handleImportFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (!parsed || !Array.isArray(parsed.trips)) throw new Error('格式錯誤');
+                    if (!confirm(`即將匯入 ${parsed.trips.length} 筆旅程資料，這將會覆蓋目前所有資料，確定要繼續嗎？`)) {
+                        event.target.value = '';
+                        return;
+                    }
+                    trips = parsed.trips;
+                    currentTripId = parsed.currentTripId || (trips[0] && trips[0].id);
+                    migrateTrips();
+                    saveState();
+                    renderTripSelector();
+                    loadTripData();
+                    showToast('備份匯入成功！');
+                } catch (err) {
+                    showToast('匯入失敗，檔案格式不正確', 'warning');
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+    </script>
+</body>
+</html>
